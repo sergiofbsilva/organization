@@ -25,7 +25,7 @@
 package module.organization.domain.util;
 
 import jvstm.cps.ConsistencyException;
-import pt.ist.bennu.core.util.BundleUtil;
+import pt.ist.bennu.core.i18n.BundleUtil;
 
 /**
  * 
@@ -37,6 +37,6 @@ public class OrganizationConsistencyException extends ConsistencyException {
 
     @Override
     public String getLocalizedMessage() {
-        return BundleUtil.getStringFromResourceBundle("resources/OrganizationResources", "error." + getMethodFullname());
+        return BundleUtil.getString("resources/OrganizationResources", "error." + getMethodFullname());
     }
 }

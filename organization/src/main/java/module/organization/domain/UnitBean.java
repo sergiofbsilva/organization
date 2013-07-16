@@ -26,7 +26,7 @@ package module.organization.domain;
 
 import org.joda.time.LocalDate;
 
-import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
+import pt.ist.dsi.commons.i18n.LocalizedString;
 
 /**
  * 
@@ -44,7 +44,7 @@ public class UnitBean extends PartyBean {
     private PartyType partyType;
     private OrganizationalModel organizationalModel;
 
-    private MultiLanguageString name;
+    private LocalizedString name;
     private String acronym;
 
     private String accountabilityJustification;
@@ -86,11 +86,11 @@ public class UnitBean extends PartyBean {
         return getUnit();
     }
 
-    public MultiLanguageString getName() {
+    public LocalizedString getName() {
         return name;
     }
 
-    public void setName(MultiLanguageString name) {
+    public void setName(LocalizedString name) {
         this.name = name;
     }
 

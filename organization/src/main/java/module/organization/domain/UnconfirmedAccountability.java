@@ -29,11 +29,11 @@ import module.organization.domain.AccountabilityType.AccountabilityTypeBean;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.util.BundleUtil;
+import pt.ist.bennu.core.i18n.BundleUtil;
+import pt.ist.bennu.core.security.Authenticate;
+import pt.ist.dsi.commons.i18n.LocalizedString;
 import pt.ist.fenixframework.Atomic;
-import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
  * 
@@ -50,7 +50,7 @@ public class UnconfirmedAccountability extends UnconfirmedAccountability_Base {
     protected UnconfirmedAccountability() {
         super();
         setSubmited(new DateTime());
-        final User user = UserView.getCurrentUser();
+        final User user = Authenticate.getUser();
         setUser(user);
     }
 
@@ -77,8 +77,8 @@ public class UnconfirmedAccountability extends UnconfirmedAccountability_Base {
         return accountabilityType == null ? createAccountabilityType() : accountabilityType;
     }
 
-    private static MultiLanguageString getLocalizedName() {
-        return BundleUtil.getMultilanguageString(ACCOUNTABILITY_TYPE_NAME_BUNDLE, ACCOUNTABILITY_TYPE_NAME_KEY);
+    private static LocalizedString getLocalizedName() {
+        return BundleUtil.getLocalizedString(ACCOUNTABILITY_TYPE_NAME_BUNDLE, ACCOUNTABILITY_TYPE_NAME_KEY);
     }
 
     private static AccountabilityType createAccountabilityType() {
@@ -110,7 +110,7 @@ public class UnconfirmedAccountability extends UnconfirmedAccountability_Base {
         setAccountabilityVersion(null);
         setParent(null);
         setChild(null);
-        setMyOrg(null);
+        setBennu(null);
         if (child.getParentAccountabilitiesSet().size() == 0) {
             child.delete();
         }

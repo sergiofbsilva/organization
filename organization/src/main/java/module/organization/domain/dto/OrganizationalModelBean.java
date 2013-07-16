@@ -26,7 +26,7 @@ package module.organization.domain.dto;
 
 import java.io.Serializable;
 
-import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
+import pt.ist.dsi.commons.i18n.LocalizedString;
 
 /**
  * 
@@ -35,16 +35,16 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
  */
 public class OrganizationalModelBean implements Serializable {
 
-    private MultiLanguageString name;
+    private LocalizedString name;
 
     public OrganizationalModelBean() {
     }
 
-    public MultiLanguageString getName() {
+    public LocalizedString getName() {
         return name;
     }
 
-    public void setName(final MultiLanguageString name) {
+    public void setName(final LocalizedString name) {
         this.name = name;
     }
 

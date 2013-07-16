@@ -33,7 +33,7 @@ import java.util.Map;
 import module.organization.domain.Party;
 import module.organization.domain.Person;
 import module.organization.domain.Unit;
-import pt.ist.bennu.core.domain.MyOrg;
+import pt.ist.bennu.core.domain.Bennu;
 import pt.ist.bennu.core.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
 import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
@@ -53,7 +53,7 @@ public class PartiesAutoCompleteProvider implements AutoCompleteProvider {
         final String[] input = trimmedValue.split(" ");
         StringNormalizer.normalize(input);
 
-        for (final Party party : MyOrg.getInstance().getPartiesSet()) {
+        for (final Party party : Bennu.getInstance().getPartiesSet()) {
             final String partyName = StringNormalizer.normalize(party.getPartyName().getContent());
             if (hasMatch(input, partyName)) {
                 if (allowResult(party)) {

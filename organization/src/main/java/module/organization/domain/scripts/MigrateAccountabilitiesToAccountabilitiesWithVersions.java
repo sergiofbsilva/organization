@@ -28,9 +28,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import module.organization.domain.Accountability;
-import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.scheduler.ReadCustomTask;
-import pt.ist.bennu.core.domain.scheduler.TransactionalThread;
+import pt.ist.bennu.core.domain.Bennu;
+import pt.ist.bennu.core.util.TransactionalThread;
+import pt.ist.bennu.scheduler.CronTask;
 
 /**
  * 
@@ -41,7 +41,7 @@ import pt.ist.bennu.core.domain.scheduler.TransactionalThread;
  * @author João Antunes
  * 
  */
-public class MigrateAccountabilitiesToAccountabilitiesWithVersions extends ReadCustomTask {
+public class MigrateAccountabilitiesToAccountabilitiesWithVersions extends CronTask {
 
     Set<Accountability> accountabilitiesToMigrate;
 
@@ -53,18 +53,18 @@ public class MigrateAccountabilitiesToAccountabilitiesWithVersions extends ReadC
      * @see jvstm.TransactionalCommand#doIt()
      */
     @Override
-    public void doIt() {
+    public void runTask() {
         accountabilitiesToMigrate = new HashSet<Accountability>();
 
         // let's get the list of all Accountabilities without Versions
 
-        for (Accountability acc : MyOrg.getInstance().getAccountabilitiesSet()) {
+        for (Accountability acc : Bennu.getInstance().getAccountabilitiesSet()) {
             if (acc.getAccountabilityVersion() == null) {
                 accountabilitiesToMigrate.add(acc);
             }
         }
 
-        out.println("Got " + accountabilitiesToMigrate.size() + " accs to migrate");
+        getLogger().info("Got " + accountabilitiesToMigrate.size() + " accs to migrate");
 
         HashSet<Accountability> oneKAccsBatch = new HashSet<Accountability>();
         int counter = 0;
@@ -95,7 +95,7 @@ public class MigrateAccountabilitiesToAccountabilitiesWithVersions extends ReadC
             }
         }
 
-        out.println("Migrated accs: " + migratedAccs);
+        getLogger().info("Migrated accs: " + migratedAccs);
 
     }
 

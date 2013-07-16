@@ -31,6 +31,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import pt.ist.bennu.core.domain.User;
+import pt.ist.bennu.core.security.Authenticate;
 
 /**
  * 
@@ -49,7 +50,7 @@ public class AccountabilityVersion extends AccountabilityVersion_Base {
         super.setBeginDate(beginDate);
         super.setEndDate(endDate);
         super.setCreationDate(new DateTime());
-        super.setUserWhoCreated(pt.ist.bennu.core.applicationTier.Authenticate.UserView.getCurrentUser());
+        super.setUserWhoCreated(Authenticate.getUser());
     }
 
     // let's protect all of the methods that could compromise the workings of

@@ -30,9 +30,9 @@ import module.organization.domain.AccountabilityType;
 import module.organization.domain.ConnectionRule;
 import module.organization.domain.Party;
 import module.organization.domain.PartyType;
-import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.util.BundleUtil;
+import module.organization.domain.exceptions.OrganizationDomainException;
+import pt.ist.bennu.core.domain.Bennu;
+import pt.ist.bennu.core.i18n.BundleUtil;
 import pt.ist.fenixframework.Atomic;
 
 /**
@@ -102,7 +102,7 @@ public class PartyTypeConnectionRule extends PartyTypeConnectionRule_Base {
         check(allowedParent, "error.PartyTypeConnectionRule.invalid.parent.type");
         check(allowedChild, "error.PartyTypeConnectionRule.invalid.child.type");
         if (allowedParent == allowedChild) {
-            throw new DomainException("error.PartyTypeConnectionRule.parent.and.child.are.equals");
+            throw new OrganizationDomainException("error.PartyTypeConnectionRule.parent.and.child.are.equals");
         }
         checkIfExistsRule(allowedParent, allowedChild);
         setAllowedParent(allowedParent);
@@ -110,13 +110,14 @@ public class PartyTypeConnectionRule extends PartyTypeConnectionRule_Base {
     }
 
     private void checkIfExistsRule(final PartyType allowedParent, final PartyType allowedChild) {
-        for (final ConnectionRule each : MyOrg.getInstance().getConnectionRulesSet()) {
+        for (final ConnectionRule each : Bennu.getInstance().getConnectionRulesSet()) {
             if (each != this && each instanceof PartyTypeConnectionRule) {
                 final PartyTypeConnectionRule rule = (PartyTypeConnectionRule) each;
                 if (rule.getAllowedParent().equals(allowedParent) && rule.getAllowedChild().equals(allowedChild)) {
                     final String[] args =
                             new String[] { allowedParent.getName().getContent(), allowedChild.getName().getContent() };
-                    throw new DomainException("error.PartyTypeConnectionRule.already.exists.with.same.parent.and.child", args);
+                    throw new OrganizationDomainException(
+                            "error.PartyTypeConnectionRule.already.exists.with.same.parent.and.child", args);
                 }
             }
         }
@@ -124,7 +125,7 @@ public class PartyTypeConnectionRule extends PartyTypeConnectionRule_Base {
 
     private void check(final Object obj, final String message) {
         if (obj == null) {
-            throw new DomainException(message);
+            throw new OrganizationDomainException(message);
         }
     }
 
@@ -156,8 +157,7 @@ public class PartyTypeConnectionRule extends PartyTypeConnectionRule_Base {
     @Override
     public String getDescription() {
         final String message =
-                BundleUtil.getStringFromResourceBundle("resources/OrganizationResources",
-                        "label.PartyTypeConnectionRule.description");
+                BundleUtil.getString("resources/OrganizationResources", "label.PartyTypeConnectionRule.description");
         return MessageFormat.format(message, getAllowedParent().getName().getContent(), getAllowedChild().getName().getContent());
     }
 }

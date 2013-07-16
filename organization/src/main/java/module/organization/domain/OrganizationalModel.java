@@ -32,9 +32,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import module.organization.domain.dto.OrganizationalModelBean;
-import pt.ist.bennu.core.domain.MyOrg;
+import pt.ist.bennu.core.domain.Bennu;
+import pt.ist.dsi.commons.i18n.LocalizedString;
 import pt.ist.fenixframework.Atomic;
-import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
  * 
@@ -54,10 +54,10 @@ public class OrganizationalModel extends OrganizationalModel_Base {
 
     public OrganizationalModel() {
         super();
-        setMyOrg(MyOrg.getInstance());
+        setBennu(Bennu.getInstance());
     }
 
-    public OrganizationalModel(final MultiLanguageString name) {
+    public OrganizationalModel(final LocalizedString name) {
         this();
         setName(name);
     }
@@ -83,7 +83,7 @@ public class OrganizationalModel extends OrganizationalModel_Base {
     public void delete() {
         getAccountabilityTypesSet().clear();
         getPartiesSet().clear();
-        setMyOrg(null);
+        setBennu(null);
         deleteDomainObject();
     }
 

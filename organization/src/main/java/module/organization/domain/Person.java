@@ -31,18 +31,20 @@ import java.util.Set;
 
 import module.organization.domain.PartyType.PartyTypeBean;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 
-import pt.ist.bennu.core.domain.MyOrg;
+import pt.ist.bennu.core.domain.Bennu;
 import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.domain.User.UserPresentationStrategy;
+import pt.ist.bennu.core.i18n.BundleUtil;
+import pt.ist.bennu.search.IndexDocument;
+import pt.ist.bennu.search.Indexable;
+import pt.ist.bennu.search.IndexableField;
+import pt.ist.bennu.search.Searchable;
+import pt.ist.dsi.commons.i18n.I18N;
+import pt.ist.dsi.commons.i18n.LocalizedString;
 import pt.ist.fenixframework.Atomic;
-import pt.ist.fenixframework.plugins.luceneIndexing.IndexableField;
-import pt.ist.fenixframework.plugins.luceneIndexing.domain.IndexDocument;
-import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Indexable;
-import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Searchable;
-import pt.utl.ist.fenix.tools.util.StringNormalizer;
-import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
  * 
@@ -59,6 +61,7 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 public class Person extends Person_Base implements Searchable, Indexable {
 
     static {
+
         User.registerUserPresentationStrategy(new UserPresentationStrategy() {
 
             @Override
@@ -125,9 +128,9 @@ public class Person extends Person_Base implements Searchable, Indexable {
 
     }
 
-    public Person(MultiLanguageString partyName, PartyType partyType) {
+    public Person(LocalizedString partyName, PartyType partyType) {
         super();
-        setMyOrgFromPerson(MyOrg.getInstance());
+        setBennuFromPerson(Bennu.getInstance());
         setPartyName(partyName);
         addPartyTypes(partyType);
     }
@@ -140,13 +143,13 @@ public class Person extends Person_Base implements Searchable, Indexable {
     @Override
     protected void disconnect() {
         setUser(null);
-        setMyOrgFromPerson(null);
+        setBennuFromPerson(null);
         super.disconnect();
     }
 
     @Atomic
     public void edit(final PersonBean bean) {
-        setPartyName(getPartyName().withDefault(bean.getName()));
+        setPartyName(getPartyName().with(I18N.getLocale(), bean.getName()));
     }
 
     public String getName() {
@@ -161,17 +164,17 @@ public class Person extends Person_Base implements Searchable, Indexable {
     }
 
     @Atomic
-    static public Person create(final MultiLanguageString partyName, final PartyType partyType) {
+    static public Person create(final LocalizedString partyName, final PartyType partyType) {
         return new Person(partyName, partyType);
     }
 
     @Atomic
     static public Person create(final PersonBean bean) {
-        return create(new MultiLanguageString(bean.getName()), getPartyTypeInstance());
+        return create(new LocalizedString.Builder().with(I18N.getLocale(), bean.getName()).build(), getPartyTypeInstance());
     }
 
-    static public Person readByPartyName(MultiLanguageString partyName) {
-        for (final Party party : MyOrg.getInstance().getPartiesSet()) {
+    static public Person readByPartyName(LocalizedString partyName) {
+        for (final Party party : Bennu.getInstance().getPartiesSet()) {
             if (!party.isUnit()) {
                 if (party.getPartyName().equals(partyName)) {
                     return (Person) party;
@@ -190,7 +193,9 @@ public class Person extends Person_Base implements Searchable, Indexable {
                 if (partyType == null) {
                     final PartyTypeBean partyTypeBean = new PartyTypeBean();
                     partyTypeBean.setType(type);
-                    partyTypeBean.setName(new MultiLanguageString("Pessoa"));
+                    String partyTypeBeanName =
+                            BundleUtil.getString("resources.OrganizationResources", "label.partyTypeBean.name");
+                    partyTypeBean.setName(new LocalizedString.Builder().with(I18N.getLocale(), partyTypeBeanName).build());
                     partyType = PartyType.create(partyTypeBean);
                 }
             }
@@ -203,12 +208,14 @@ public class Person extends Person_Base implements Searchable, Indexable {
 
         final String trimmedValue = value.trim();
         final String[] input = trimmedValue.split(" ");
-        StringNormalizer.normalize(input);
+        for (int i = 0; i < input.length; i++) {
+            input[i] = StringUtils.stripAccents(input[i]);
+        }
 
-        for (final Party party : MyOrg.getInstance().getPersonsSet()) {
+        for (final Party party : Bennu.getInstance().getPersonsSet()) {
             if (party.isPerson()) {
                 final Person person = (Person) party;
-                final String unitName = StringNormalizer.normalize(person.getPartyName().getContent());
+                final String unitName = StringUtils.stripAccents(person.getPartyName().getContent());
                 if (hasMatch(input, unitName)) {
                     persons.add(person);
                 }
@@ -257,11 +264,6 @@ public class Person extends Person_Base implements Searchable, Indexable {
     @Override
     public Set<Indexable> getObjectsToIndex() {
         return Collections.singleton((Indexable) this);
-    }
-
-    @Override
-    public IndexMode getIndexMode() {
-        return IndexMode.MANUAL;
     }
 
     @Override

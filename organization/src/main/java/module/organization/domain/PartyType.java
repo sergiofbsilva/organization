@@ -26,10 +26,10 @@ package module.organization.domain;
 
 import java.io.Serializable;
 
-import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
+import module.organization.domain.exceptions.OrganizationDomainException;
+import pt.ist.bennu.core.domain.Bennu;
+import pt.ist.dsi.commons.i18n.LocalizedString;
 import pt.ist.fenixframework.Atomic;
-import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
  * 
@@ -44,7 +44,7 @@ public class PartyType extends PartyType_Base implements Comparable<PartyType> {
 
         private static final long serialVersionUID = -3867902288197067597L;
         private String type;
-        private MultiLanguageString name;
+        private LocalizedString name;
         private PartyType partyType;
 
         public PartyTypeBean() {
@@ -64,11 +64,11 @@ public class PartyType extends PartyType_Base implements Comparable<PartyType> {
             this.type = type;
         }
 
-        public MultiLanguageString getName() {
+        public LocalizedString getName() {
             return name;
         }
 
-        public void setName(MultiLanguageString name) {
+        public void setName(LocalizedString name) {
             this.name = name;
         }
 
@@ -87,14 +87,14 @@ public class PartyType extends PartyType_Base implements Comparable<PartyType> {
 
     private PartyType() {
         super();
-        setMyOrg(MyOrg.getInstance());
+        setBennu(Bennu.getInstance());
     }
 
     public PartyType(final String type) {
         this(type, null);
     }
 
-    public PartyType(final String type, final MultiLanguageString name) {
+    public PartyType(final String type, final LocalizedString name) {
         this();
         check(type);
         setType(type);
@@ -103,11 +103,11 @@ public class PartyType extends PartyType_Base implements Comparable<PartyType> {
 
     private void check(final String type) {
         if (type == null || type.isEmpty()) {
-            throw new DomainException("error.PartyType.invalid.type");
+            throw new OrganizationDomainException("error.PartyType.invalid.type");
         }
         final PartyType partyType = readBy(type);
         if (partyType != null && partyType != this) {
-            throw new DomainException("error.PartyType.duplicated.type", type);
+            throw new OrganizationDomainException("error.PartyType.duplicated.type", type);
         }
     }
 
@@ -125,16 +125,16 @@ public class PartyType extends PartyType_Base implements Comparable<PartyType> {
     @Atomic
     public void delete() {
         canDelete();
-        setMyOrg(null);
+        setBennu(null);
         deleteDomainObject();
     }
 
     private void canDelete() {
         if (!getPartiesSet().isEmpty()) {
-            throw new DomainException("error.PartyType.has.parties.cannot.delete");
+            throw new OrganizationDomainException("error.PartyType.has.parties.cannot.delete");
         }
         if (!getParentConnectionRulesSet().isEmpty() || !getChildConnectionRulesSet().isEmpty()) {
-            throw new DomainException("error.PartyType.has.connection.rules.cannot.delete");
+            throw new OrganizationDomainException("error.PartyType.has.connection.rules.cannot.delete");
         }
     }
 
@@ -153,7 +153,7 @@ public class PartyType extends PartyType_Base implements Comparable<PartyType> {
         if (type == null || type.isEmpty()) {
             return null;
         }
-        for (final PartyType element : MyOrg.getInstance().getPartyTypesSet()) {
+        for (final PartyType element : Bennu.getInstance().getPartyTypesSet()) {
             if (element.hasType(type)) {
                 return element;
             }

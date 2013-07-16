@@ -27,53 +27,76 @@ package module.organization.domain.groups;
 import java.util.HashSet;
 import java.util.Set;
 
-import module.organization.domain.Party;
-import module.organization.domain.Person;
-import pt.ist.bennu.core.domain.MyOrg;
+import org.joda.time.DateTime;
+
+import pt.ist.bennu.core.annotation.CustomGroupOperator;
+import pt.ist.bennu.core.domain.Bennu;
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.groups.PersistentGroup;
-import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.fenixframework.Atomic;
+import pt.ist.bennu.core.domain.groups.Group;
+import pt.ist.bennu.core.domain.groups.UserGroup;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Sets;
 
 /**
  * 
  * @author Pedro Santos
  * @author Susana Fernandes
  * 
+ * 
+ *         This group is deprecated since in Bennu2 every person has an user. Use {@link UserGroup}
  */
+
+@Deprecated
+@CustomGroupOperator("persons")
 public class PersonGroup extends PersonGroup_Base {
 
-    public PersonGroup() {
+    private PersonGroup() {
         super();
-        setSystemGroupMyOrg(MyOrg.getInstance());
     }
 
-    @Atomic
-    public static PersonGroup getInstance() {
-        final PersonGroup personGroup = (PersonGroup) PersistentGroup.getSystemGroup(PersonGroup.class);
-        return personGroup == null ? new PersonGroup() : personGroup;
+    @Override
+    public String getPresentationName() {
+        return getClass().getSimpleName();
     }
 
     @Override
     public Set<User> getMembers() {
-        Set<User> users = new HashSet<User>();
-        for (final Party party : MyOrg.getInstance().getPartiesSet()) {
-            if (party.isPerson()) {
-                users.add(((Person) party).getUser());
+        return Sets.filter(Bennu.getInstance().getUsersSet(), new Predicate<User>() {
+
+            @Override
+            public boolean apply(User input) {
+                return input != null && input.getPerson() != null;
             }
-        }
-        return users;
+        });
     }
 
     @Override
-    public String getName() {
-        return BundleUtil.getStringFromResourceBundle("resources/OrganizationResources",
-                "label.persistent.group.personGroup.name");
+    public Set<User> getMembers(DateTime when) {
+        return getMembers();
     }
 
     @Override
     public boolean isMember(User user) {
         return user != null && user.getPerson() != null;
+    }
+
+    @Override
+    public boolean isMember(User user, DateTime when) {
+        return isMember(user);
+    }
+
+    public static PersonGroup getInstance() {
+        final PersonGroup personGroup = select(PersonGroup.class);
+        return personGroup == null ? new PersonGroup() : personGroup;
+    }
+
+    public static Set<Group> groupsForUser(User user) {
+        final Set<Group> groups = new HashSet<Group>();
+        if (user != null && user.getPerson() != null) {
+            groups.add(getInstance());
+        }
+        return groups;
     }
 
 }

@@ -28,10 +28,10 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
-import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
+import module.organization.domain.exceptions.OrganizationDomainException;
+import pt.ist.bennu.core.domain.Bennu;
+import pt.ist.dsi.commons.i18n.LocalizedString;
 import pt.ist.fenixframework.Atomic;
-import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
  * 
@@ -58,7 +58,7 @@ public class AccountabilityType extends AccountabilityType_Base implements Compa
 
         private static final long serialVersionUID = -1189746935274309327L;
         private String type;
-        private MultiLanguageString name;
+        private LocalizedString name;
         private AccountabilityType accountabilityType;
 
         public AccountabilityTypeBean() {
@@ -70,7 +70,7 @@ public class AccountabilityType extends AccountabilityType_Base implements Compa
             setAccountabilityType(accountabilityType);
         }
 
-        public AccountabilityTypeBean(String type, MultiLanguageString name) {
+        public AccountabilityTypeBean(String type, LocalizedString name) {
             setType(type);
             setName(name);
         }
@@ -83,11 +83,11 @@ public class AccountabilityType extends AccountabilityType_Base implements Compa
             this.type = type;
         }
 
-        public MultiLanguageString getName() {
+        public LocalizedString getName() {
             return name;
         }
 
-        public void setName(MultiLanguageString name) {
+        public void setName(LocalizedString name) {
             this.name = name;
         }
 
@@ -110,14 +110,14 @@ public class AccountabilityType extends AccountabilityType_Base implements Compa
 
     protected AccountabilityType() {
         super();
-        setMyOrg(MyOrg.getInstance());
+        setBennu(Bennu.getInstance());
     }
 
     protected AccountabilityType(final String type) {
         this(type, null);
     }
 
-    protected AccountabilityType(final String type, final MultiLanguageString name) {
+    protected AccountabilityType(final String type, final LocalizedString name) {
         this();
         check(type);
         setType(type);
@@ -126,11 +126,11 @@ public class AccountabilityType extends AccountabilityType_Base implements Compa
 
     protected void check(final String type) {
         if (type == null || type.isEmpty()) {
-            throw new DomainException("error.AccountabilityType.invalid.type");
+            throw new OrganizationDomainException("error.AccountabilityType.invalid.type");
         }
         final AccountabilityType accountabilityType = readBy(type);
         if (accountabilityType != null && accountabilityType != this) {
-            throw new DomainException("error.AccountabilityType.duplicated.type", type);
+            throw new OrganizationDomainException("error.AccountabilityType.duplicated.type", type);
         }
     }
 
@@ -139,7 +139,7 @@ public class AccountabilityType extends AccountabilityType_Base implements Compa
     }
 
     @Atomic
-    public void edit(final String type, final MultiLanguageString name) {
+    public void edit(final String type, final LocalizedString name) {
         check(type);
         setType(type);
         setName(name);
@@ -154,13 +154,13 @@ public class AccountabilityType extends AccountabilityType_Base implements Compa
 
     protected void canDelete() {
         if (!getAccountabilitiesSet().isEmpty()) {
-            throw new DomainException("error.AccountabilityType.has.accountabilities.cannot.delete");
+            throw new OrganizationDomainException("error.AccountabilityType.has.accountabilities.cannot.delete");
         }
     }
 
     private void disconnect() {
         getConnectionRules().clear();
-        setMyOrg(null);
+        setBennu(null);
     }
 
     @Override
@@ -187,7 +187,7 @@ public class AccountabilityType extends AccountabilityType_Base implements Compa
         if (type == null || type.isEmpty()) {
             return null;
         }
-        for (final AccountabilityType element : MyOrg.getInstance().getAccountabilityTypesSet()) {
+        for (final AccountabilityType element : Bennu.getInstance().getAccountabilityTypesSet()) {
             if (element.hasType(type)) {
                 return element;
             }

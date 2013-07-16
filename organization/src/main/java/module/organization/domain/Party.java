@@ -30,11 +30,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import module.organization.domain.exceptions.OrganizationDomainException;
 import module.organization.domain.predicates.PartyPredicate;
 import module.organization.domain.predicates.PartyPredicate.PartyByAccTypeAndDates;
 import module.organization.domain.predicates.PartyPredicate.PartyByAccountabilityType;
@@ -45,14 +45,12 @@ import module.organization.domain.predicates.PartyResultCollection;
 
 import org.joda.time.LocalDate;
 
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.Presentable;
-import pt.ist.bennu.core.domain.RoleType;
+import pt.ist.bennu.core.domain.Bennu;
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
+import pt.ist.bennu.core.domain.groups.Group;
+import pt.ist.bennu.core.i18n.BundleUtil;
+import pt.ist.bennu.core.security.Authenticate;
 import pt.ist.fenixframework.Atomic;
-import pt.utl.ist.fenix.tools.util.i18n.Language;
 
 /**
  * 
@@ -65,7 +63,7 @@ import pt.utl.ist.fenix.tools.util.i18n.Language;
  * @author Luis Cruz
  * 
  */
-abstract public class Party extends Party_Base implements Presentable {
+abstract public class Party extends Party_Base {
 
     static public final Comparator<Party> COMPARATOR_BY_NAME = new Comparator<Party>() {
         @Override
@@ -85,12 +83,12 @@ abstract public class Party extends Party_Base implements Presentable {
 
     protected Party() {
         super();
-        setMyOrg(MyOrg.getInstance());
+        setBennu(Bennu.getInstance());
     }
 
     protected void check(final Object obj, final String message) {
         if (obj == null) {
-            throw new DomainException(message);
+            throw new OrganizationDomainException(message);
         }
     }
 
@@ -466,7 +464,7 @@ abstract public class Party extends Party_Base implements Presentable {
 
     protected void canDelete() {
         if (!getChildAccountabilitiesSet().isEmpty()) {
-            throw new DomainException("error.Party.delete.has.child.accountabilities");
+            throw new OrganizationDomainException("error.Party.delete.has.child.accountabilities");
         }
     }
 
@@ -475,7 +473,7 @@ abstract public class Party extends Party_Base implements Presentable {
             acc.delete();
         }
         getPartyTypes().clear();
-        setMyOrg(null);
+        setBennu(null);
     }
 
     /**
@@ -572,8 +570,7 @@ abstract public class Party extends Party_Base implements Presentable {
             if (accountability.getChild() == child && accountability.getAccountabilityType() == type
                     && accountability.intersects(begin, end)) {
                 if (intersectingAccountability != null) {
-                    throw new DomainException("error.Party.multiple.intersecting.accountabilities", ResourceBundle.getBundle(
-                            "resources/OrganizationResources", Language.getLocale()));
+                    throw new OrganizationDomainException("error.Party.multiple.intersecting.accountabilities");
                 }
                 intersectingAccountability = accountability;
             }
@@ -585,7 +582,7 @@ abstract public class Party extends Party_Base implements Presentable {
     public void removeParent(final Accountability accountability) {
         if (getParentAccountabilitiesSet().contains(accountability)) {
             if (isUnit() && getParentAccountabilitiesSet().size() == 1) {
-                throw new DomainException("error.Party.cannot.remove.parent.accountability");
+                throw new OrganizationDomainException("error.Party.cannot.remove.parent.accountability");
             }
             accountability.delete();
         }
@@ -597,10 +594,10 @@ abstract public class Party extends Party_Base implements Presentable {
         getPartyTypes().addAll(partyTypes);
 
         if (getPartyTypesSet().isEmpty()) {
-            throw new DomainException("error.Party.must.have.at.least.one.party.type");
+            throw new OrganizationDomainException("error.Party.must.have.at.least.one.party.type");
         }
         if (!accountabilitiesStillValid()) {
-            throw new DomainException("error.Party.invalid.party.types.accountability.rules.are.not.correct");
+            throw new OrganizationDomainException("error.Party.invalid.party.types.accountability.rules.are.not.correct");
         }
 
     }
@@ -615,9 +612,9 @@ abstract public class Party extends Party_Base implements Presentable {
     }
 
     public String getPartyNameWithSuffixType() {
-        return ResourceBundle.getBundle("resources.OrganizationResources", Language.getLocale()).getString(
-                "label." + getClass().getSimpleName().toLowerCase())
-                + " - " + getPartyName().getContent();
+        final String simpleClassNameLabel = "label." + getClass().getSimpleName().toLowerCase();
+        final String partyType = BundleUtil.getString("resources.OrganizationResources", simpleClassNameLabel);
+        return partyType + " - " + getPartyName().getContent();
     }
 
     public Set<OrganizationalModel> getAllOrganizationModels() {
@@ -644,8 +641,8 @@ abstract public class Party extends Party_Base implements Presentable {
     }
 
     public boolean isAuthorizedToManage() {
-        final User user = UserView.getCurrentUser();
-        return user == null || user.hasRoleType(RoleType.MANAGER);
+        final User user = Authenticate.getUser();
+        return user == null || Group.parse("#managers").isMember(user);
     }
 
     public boolean hasChildAccountabilityIncludingAncestry(final Collection<AccountabilityType> accountabilityTypes,
@@ -694,7 +691,6 @@ abstract public class Party extends Party_Base implements Presentable {
         return null;
     }
 
-    @Override
     public String getPresentationName() {
         return getPartyName().getContent();
     }

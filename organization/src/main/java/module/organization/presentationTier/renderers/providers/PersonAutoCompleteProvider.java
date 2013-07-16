@@ -32,7 +32,7 @@ import java.util.Map;
 
 import module.organization.domain.Party;
 import module.organization.domain.Person;
-import pt.ist.bennu.core.domain.MyOrg;
+import pt.ist.bennu.core.domain.Bennu;
 import pt.ist.bennu.core.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
 import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
@@ -77,7 +77,7 @@ public class PersonAutoCompleteProvider implements AutoCompleteProvider {
      * Results
      */
     protected Collection<Person> getPersons(Map<String, String> argsMap, String value) {
-        return MyOrg.getInstance().getPersonsSet();
+        return Bennu.getInstance().getPersonsSet();
     }
 
     private boolean hasMatch(final String[] input, final String unitNameParts) {

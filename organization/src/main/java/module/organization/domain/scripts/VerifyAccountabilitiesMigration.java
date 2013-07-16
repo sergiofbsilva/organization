@@ -49,7 +49,7 @@ package module.organization.domain.scripts;
  correctAccs = 0;
  incorrectAccs = 0;
 
- for (Accountability acc : MyOrg.getInstance().getAccountabilities()) {
+ for (Accountability acc : Bennu.getInstance().getAccountabilities()) {
  if (JavaUtil.isObjectEqualTo(acc.getEndDate(), acc.getEndDate2())
  && JavaUtil.isObjectEqualTo(acc.getBeginDate(), acc.getBeginDate2())
  && JavaUtil.isObjectEqualTo(acc.getCreationDate(), acc.getCreationDate2())

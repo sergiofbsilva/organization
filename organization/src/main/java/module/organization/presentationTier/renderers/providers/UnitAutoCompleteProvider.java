@@ -33,7 +33,7 @@ import java.util.Set;
 
 import module.organization.domain.Party;
 import module.organization.domain.Unit;
-import pt.ist.bennu.core.domain.MyOrg;
+import pt.ist.bennu.core.domain.Bennu;
 import pt.ist.bennu.core.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
 import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
@@ -83,6 +83,6 @@ public class UnitAutoCompleteProvider implements AutoCompleteProvider {
     }
 
     protected Set<? extends Party> getParties(Map<String, String> argsMap, String value) {
-        return MyOrg.getInstance().getPartiesSet();
+        return Bennu.getInstance().getPartiesSet();
     }
 }

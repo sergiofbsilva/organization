@@ -52,12 +52,13 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import pt.ist.bennu.core.domain.MyOrg;
+import pt.ist.bennu.core.domain.Bennu;
 import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.presentationTier.LayoutContext;
+import pt.ist.bennu.core.i18n.BundleUtil;
+import pt.ist.bennu.core.presentationTier.DefaultContext;
 import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
 import pt.ist.bennu.core.presentationTier.component.OrganizationChart;
-import pt.ist.bennu.core.util.BundleUtil;
+import pt.ist.bennu.portal.Functionality;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.utl.ist.fenix.tools.util.Pair;
@@ -193,7 +194,7 @@ public class OrganizationModelAction extends ContextBaseAction {
 
         @Override
         public String getPresentationName() {
-            return BundleUtil.getStringFromResourceBundle("resources.OrganizationResources", "label.viewUnits");
+            return BundleUtil.getString("resources.OrganizationResources", "label.viewUnits");
         }
 
     }
@@ -212,7 +213,7 @@ public class OrganizationModelAction extends ContextBaseAction {
 
         @Override
         public String getPresentationName() {
-            return BundleUtil.getStringFromResourceBundle("resources.OrganizationResources", "label.viewPeople");
+            return BundleUtil.getString("resources.OrganizationResources", "label.viewPeople");
         }
 
     }
@@ -225,8 +226,8 @@ public class OrganizationModelAction extends ContextBaseAction {
     }
 
     public static void addHeadToLayoutContext(final HttpServletRequest request) {
-        final LayoutContext layoutContext = (LayoutContext) getContext(request);
-        layoutContext.addHead("/organization/layoutContext/head.jsp");
+        final DefaultContext layoutContext = (DefaultContext) getContext(request);
+        layoutContext.setHead("/organization/layoutContext/head.jsp");
     }
 
     @Override
@@ -240,12 +241,14 @@ public class OrganizationModelAction extends ContextBaseAction {
     public static void viewModels(final HttpServletRequest request) {
         final Set<OrganizationalModel> organizationalModels =
                 new TreeSet<OrganizationalModel>(OrganizationalModel.COMPARATORY_BY_NAME);
-        organizationalModels.addAll(MyOrg.getInstance().getOrganizationalModelsSet());
+        organizationalModels.addAll(Bennu.getInstance().getOrganizationalModelsSet());
         request.setAttribute("organizationalModels", organizationalModels);
         final OrganizationalModelChart organizationalModelChart = new OrganizationalModelChart(organizationalModels);
         request.setAttribute("organizationalModelChart", organizationalModelChart);
     }
 
+    @Functionality(app = OrganizationManagementAction.class, path = "viewModels", bundle = OrganizationManagementAction.BUNDLE,
+            title = "label.manage.organization", description = "label.manage.organization", group = "#managers")
     public ActionForward viewModels(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws Exception {
         viewModels(request);
