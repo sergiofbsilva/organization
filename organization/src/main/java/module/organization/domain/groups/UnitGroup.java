@@ -30,9 +30,9 @@ import java.util.Set;
 import module.organization.domain.AccountabilityType;
 import module.organization.domain.Person;
 import module.organization.domain.Unit;
+import module.organization.domain.exceptions.OrganizationDomainException;
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.util.BundleUtil;
+import pt.ist.bennu.core.i18n.BundleUtil;
 import pt.ist.fenixframework.Atomic;
 
 /**
@@ -46,7 +46,7 @@ public class UnitGroup extends UnitGroup_Base {
     private UnitGroup(final Unit unit, final AccountabilityType[] memberTypes, final AccountabilityType[] childUnitTypes) {
         super();
         if (memberTypes == null || memberTypes.length == 0) {
-            throw new DomainException("cannot.create.empty.unit.group");
+            throw new OrganizationDomainException("cannot.create.empty.unit.group");
         }
         setUnit(unit);
         addAccountabilityTypes(getMemberAccountabilityTypeSet(), memberTypes);
@@ -79,10 +79,10 @@ public class UnitGroup extends UnitGroup_Base {
         }
         final String unitName = unit.getPresentationName();
         final String unitIdentifier =
-                !getChildUnitAccountabilityTypeSet().isEmpty() ? BundleUtil.getFormattedStringFromResourceBundle(
-                        "resources/OrganizationResources", "label.persistent.group.unitGroup.includeing.subunits", unitName) : unitName;
-        return BundleUtil.getFormattedStringFromResourceBundle("resources/OrganizationResources",
-                "label.persistent.group.unitGroup.name", unitIdentifier, builder.toString());
+                !getChildUnitAccountabilityTypeSet().isEmpty() ? BundleUtil.getString("resources/OrganizationResources",
+                        "label.persistent.group.unitGroup.includeing.subunits", unitName) : unitName;
+        return BundleUtil.getString("resources/OrganizationResources", "label.persistent.group.unitGroup.name", unitIdentifier,
+                builder.toString());
     }
 
     @Override

@@ -51,21 +51,16 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.RoleType;
-import pt.ist.bennu.core.domain.VirtualHost;
-import pt.ist.bennu.core.domain.contents.ActionNode;
-import pt.ist.bennu.core.domain.contents.Node;
 import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.domain.groups.Role;
-import pt.ist.bennu.core.presentationTier.LayoutContext;
+import pt.ist.bennu.core.presentationTier.DefaultContext;
 import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
 import pt.ist.bennu.core.presentationTier.forms.BaseForm;
+import pt.ist.bennu.portal.Application;
+import pt.ist.bennu.portal.Functionality;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
-import pt.ist.fenixWebFramework.servlets.functionalities.CreateNodeAction;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
-@Mapping(path = "/organization", formBeanClass = OrganizationManagementAction.OrganizationForm.class)
 /**
  * 
  * @author Pedro Santos
@@ -74,7 +69,17 @@ import pt.utl.ist.fenix.tools.util.StringNormalizer;
  * @author Luis Cruz
  * 
  */
+
+@Mapping(path = "/organization", formBeanClass = OrganizationManagementAction.OrganizationForm.class)
+@Application(path = "organization", bundle = OrganizationManagementAction.BUNDLE, title = "label.module.organization",
+        description = "label.module.organization", group = "#managers")
 public class OrganizationManagementAction extends ContextBaseAction {
+
+    private static MyOrg getMyOrg() {
+        return MyOrg.getInstance();
+    }
+
+    public final static String BUNDLE = "resources.OrganizationResources";
 
     static public class OrganizationForm extends BaseForm {
         private static final long serialVersionUID = 4469811183847905665L;
@@ -124,57 +129,21 @@ public class OrganizationManagementAction extends ContextBaseAction {
     public ActionForward execute(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws Exception {
         final ActionForward forward = super.execute(mapping, form, request, response);
-        final LayoutContext layoutContext = (LayoutContext) getContext(request);
-        layoutContext.addHead("/organization/layoutContext/head.jsp");
+        final DefaultContext layoutContext = (DefaultContext) getContext(request);
+        layoutContext.setHead("/organization/layoutContext/head.jsp");
         return forward;
     }
 
-    @CreateNodeAction(bundle = "ORGANIZATION_RESOURCES", key = "add.node.manage.organization",
-            groupKey = "label.module.organization")
-    public final ActionForward createOrganizationNode(final ActionMapping mapping, final ActionForm form,
-            final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-        final VirtualHost virtualHost = getDomainObject(request, "virtualHostToManageId");
-
-        final Node parentOfNodes = getDomainObject(request, "parentOfNodesToManageId");
-
-        // final ActionNode topActionNode =
-        // ActionNode.createActionNode(virtualHost, parentOfNodes,
-        // "/organization", "intro",
-        // "resources.OrganizationResources", "label.manage.organization",
-        // Role.getRole(RoleType.MANAGER));
-
-        final ActionNode topActionNode =
-                ActionNode.createActionNode(virtualHost, parentOfNodes, "/organizationModel", "viewModels",
-                        "resources.OrganizationResources", "label.manage.organization", Role.getRole(RoleType.MANAGER) // UserGroup.getInstance()
-                        // In the future we want to open this up to every user... but for now we need to keep this link hidden
-                        );
-
-//	ActionNode.createActionNode(virtualHost, topActionNode, "/organization", "viewPartyTypes",
-//		"resources.OrganizationResources", "label.party.type", Role.getRole(RoleType.MANAGER));
-//
-//	ActionNode.createActionNode(virtualHost, topActionNode, "/organization", "viewAccountabilityTypes",
-//		"resources.OrganizationResources", "label.accountability.type", Role.getRole(RoleType.MANAGER));
-//
-//	ActionNode.createActionNode(virtualHost, topActionNode, "/organization", "viewConnectionRules",
-//		"resources.OrganizationResources", "label.connection.rules", Role.getRole(RoleType.MANAGER));
-//
-//	ActionNode.createActionNode(virtualHost, topActionNode, "/organization", "viewOrganization",
-//		"resources.OrganizationResources", "label.organizational.structure", Role.getRole(RoleType.MANAGER));
-//
-//	ActionNode.createActionNode(virtualHost, topActionNode, "/organization", "managePersons",
-//		"resources.OrganizationResources", "label.persons.manage", Role.getRole(RoleType.MANAGER));
-
-        // ActionNode.createActionNode(virtualHost, topActionNode,
-        // "/organizationModel", "viewModels",
-        // "resources.OrganizationResources", "label.models",
-        // UserGroup.getInstance());
-
-        return forwardToMuneConfiguration(request, virtualHost, topActionNode);
-    }
-
+    @Functionality(app = OrganizationManagementAction.class, path = "intro", bundle = BUNDLE,
+            title = "label.manage.organization", description = "label.manage.organization", group = "#managers")
     public ActionForward intro(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws Exception {
         return forward(request, "/organization/intro.jsp");
+    }
+
+    public ActionForward app(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+            final HttpServletResponse response) throws Exception {
+        return intro(mapping, form, request, response);
     }
 
     public ActionForward viewPartyTypes(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -634,7 +603,7 @@ public class OrganizationManagementAction extends ContextBaseAction {
         final String[] input = trimmedValue.split(" ");
         StringNormalizer.normalize(input);
 
-        for (final Party party : MyOrg.getInstance().getPersonsSet()) {
+        for (final Party party : getMyOrg().getPersonsSet()) {
             if (party.isPerson()) {
                 final Person person = (Person) party;
                 final String unitName = StringNormalizer.normalize(person.getPartyName().getContent());

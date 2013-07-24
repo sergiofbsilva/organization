@@ -29,9 +29,9 @@ import module.organization.domain.AccountabilityType.AccountabilityTypeBean;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.util.BundleUtil;
+import pt.ist.bennu.core.security.Authenticate;
+import pt.ist.bennu.core.util.legacy.BundleUtil;
 import pt.ist.fenixframework.Atomic;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
@@ -50,7 +50,7 @@ public class UnconfirmedAccountability extends UnconfirmedAccountability_Base {
     protected UnconfirmedAccountability() {
         super();
         setSubmited(new DateTime());
-        final User user = UserView.getCurrentUser();
+        final User user = Authenticate.getUser();
         setUser(user);
     }
 

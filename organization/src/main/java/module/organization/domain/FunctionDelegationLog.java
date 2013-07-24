@@ -26,8 +26,8 @@ package module.organization.domain;
 
 import org.joda.time.DateTime;
 
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.User;
+import pt.ist.bennu.core.security.Authenticate;
 
 /**
  * 
@@ -41,7 +41,7 @@ public class FunctionDelegationLog extends FunctionDelegationLog_Base {
         super();
         setMyOrg(functionDelegation.getMyOrg());
         setFunctionDelegation(functionDelegation);
-        final User user = UserView.getCurrentUser();
+        final User user = Authenticate.getUser();
         setExecutor(user == null ? null : user.getUsername());
         setOperationInstant(new DateTime());
         setOperation(operation);

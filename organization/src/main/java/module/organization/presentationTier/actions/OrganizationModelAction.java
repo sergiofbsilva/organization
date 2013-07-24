@@ -46,6 +46,7 @@ import module.organization.domain.UnconfirmedAccountability;
 import module.organization.domain.Unit;
 import module.organization.domain.UnitBean;
 import module.organization.domain.dto.OrganizationalModelBean;
+import module.organization.domain.exceptions.OrganizationDomainException;
 import module.organization.domain.search.PartySearchBean;
 
 import org.apache.struts.action.ActionForm;
@@ -53,11 +54,10 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.presentationTier.LayoutContext;
+import pt.ist.bennu.core.i18n.BundleUtil;
+import pt.ist.bennu.core.presentationTier.DefaultContext;
 import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
 import pt.ist.bennu.core.presentationTier.component.OrganizationChart;
-import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.utl.ist.fenix.tools.util.Pair;
@@ -193,7 +193,7 @@ public class OrganizationModelAction extends ContextBaseAction {
 
         @Override
         public String getPresentationName() {
-            return BundleUtil.getStringFromResourceBundle("resources.OrganizationResources", "label.viewUnits");
+            return BundleUtil.getString("resources.OrganizationResources", "label.viewUnits");
         }
 
     }
@@ -212,7 +212,7 @@ public class OrganizationModelAction extends ContextBaseAction {
 
         @Override
         public String getPresentationName() {
-            return BundleUtil.getStringFromResourceBundle("resources.OrganizationResources", "label.viewPeople");
+            return BundleUtil.getString("resources.OrganizationResources", "label.viewPeople");
         }
 
     }
@@ -225,8 +225,8 @@ public class OrganizationModelAction extends ContextBaseAction {
     }
 
     public static void addHeadToLayoutContext(final HttpServletRequest request) {
-        final LayoutContext layoutContext = (LayoutContext) getContext(request);
-        layoutContext.addHead("/organization/layoutContext/head.jsp");
+        final DefaultContext layoutContext = (DefaultContext) getContext(request);
+        layoutContext.setHead("/organization/layoutContext/head.jsp");
     }
 
     @Override
@@ -367,7 +367,7 @@ public class OrganizationModelAction extends ContextBaseAction {
         try {
             bean.createUnit();
             return viewModel(mapping, form, request, response);
-        } catch (final DomainException e) {
+        } catch (final OrganizationDomainException e) {
             addMessage(request, e.getKey(), e.getArgs());
             request.setAttribute("organizationalModel", organizationalModel);
             final Party party = getDomainObject(request, "partyOid");
@@ -393,7 +393,7 @@ public class OrganizationModelAction extends ContextBaseAction {
         try {
             bean.editUnit();
             return viewModel(mapping, form, request, response);
-        } catch (final DomainException e) {
+        } catch (final OrganizationDomainException e) {
             addMessage(request, e.getKey(), e.getArgs());
             final OrganizationalModel organizationalModel = getDomainObject(request, "organizationalModelOid");
             request.setAttribute("organizationalModel", organizationalModel);
@@ -431,7 +431,7 @@ public class OrganizationModelAction extends ContextBaseAction {
         try {
             unitBean.addChild();
             return viewModel(mapping, form, request, response);
-        } catch (final DomainException e) {
+        } catch (final OrganizationDomainException e) {
             addMessage(request, e.getKey(), e.getArgs());
             final OrganizationalModel organizationalModel = getDomainObject(request, "organizationalModelOid");
             request.setAttribute("organizationalModel", organizationalModel);
@@ -458,7 +458,7 @@ public class OrganizationModelAction extends ContextBaseAction {
             request.setAttribute("partiesChart", partyChart);
 
             return forward(request, "/organization/model/viewModel.jsp");
-        } catch (final DomainException e) {
+        } catch (final OrganizationDomainException e) {
             addMessage(request, e.getKey(), e.getArgs());
         }
         return viewModel(mapping, form, request, response);

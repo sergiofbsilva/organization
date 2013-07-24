@@ -78,10 +78,10 @@ class module.organization.domain.OrganizationalModel {
 	MultiLanguageString name;
 }
 
-class module.organization.domain.groups.PersonGroup extends pt.ist.bennu.core.domain.groups.PersistentGroup {
+class module.organization.domain.groups.PersonGroup extends pt.ist.bennu.core.domain.groups.legacy.PersistentGroup {
 }
 
-class module.organization.domain.groups.UnitGroup extends pt.ist.bennu.core.domain.groups.PersistentGroup {
+class module.organization.domain.groups.UnitGroup extends pt.ist.bennu.core.domain.groups.legacy.PersistentGroup {
 }
 
 class module.organization.domain.FunctionDelegation {

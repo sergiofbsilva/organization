@@ -31,9 +31,9 @@ import module.organization.domain.AccountabilityType;
 import module.organization.domain.ConnectionRule;
 import module.organization.domain.Party;
 import module.organization.domain.Unit;
+import module.organization.domain.exceptions.OrganizationDomainException;
 import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.util.BundleUtil;
+import pt.ist.bennu.core.i18n.BundleUtil;
 import pt.ist.fenixframework.Atomic;
 
 /**
@@ -74,7 +74,7 @@ public class UniqueNameAndAcronymConnectionRule extends UniqueNameAndAcronymConn
     private void checkIfExistsRule() {
         for (final ConnectionRule rule : MyOrg.getInstance().getConnectionRulesSet()) {
             if (rule != this && rule instanceof UniqueNameAndAcronymConnectionRule) {
-                throw new DomainException("error.UniqueNameAndAcronymConnectionRule.rule.already.exists");
+                throw new OrganizationDomainException("error.UniqueNameAndAcronymConnectionRule.rule.already.exists");
             }
         }
     }
@@ -119,7 +119,6 @@ public class UniqueNameAndAcronymConnectionRule extends UniqueNameAndAcronymConn
 
     @Override
     public String getDescription() {
-        return BundleUtil.getStringFromResourceBundle("resources/OrganizationResources",
-                "label.UniqueNameAndAcronymConnectionRule.description");
+        return BundleUtil.getString("resources/OrganizationResources", "label.UniqueNameAndAcronymConnectionRule.description");
     }
 }

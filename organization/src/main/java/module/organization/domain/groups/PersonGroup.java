@@ -31,8 +31,8 @@ import module.organization.domain.Party;
 import module.organization.domain.Person;
 import pt.ist.bennu.core.domain.MyOrg;
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.groups.PersistentGroup;
-import pt.ist.bennu.core.util.BundleUtil;
+import pt.ist.bennu.core.domain.groups.legacy.PersistentGroup;
+import pt.ist.bennu.core.i18n.BundleUtil;
 import pt.ist.fenixframework.Atomic;
 
 /**
@@ -67,8 +67,7 @@ public class PersonGroup extends PersonGroup_Base {
 
     @Override
     public String getName() {
-        return BundleUtil.getStringFromResourceBundle("resources/OrganizationResources",
-                "label.persistent.group.personGroup.name");
+        return BundleUtil.getString("resources/OrganizationResources", "label.persistent.group.personGroup.name");
     }
 
     @Override

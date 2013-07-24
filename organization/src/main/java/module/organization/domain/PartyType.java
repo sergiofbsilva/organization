@@ -26,8 +26,8 @@ package module.organization.domain;
 
 import java.io.Serializable;
 
+import module.organization.domain.exceptions.OrganizationDomainException;
 import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
 import pt.ist.fenixframework.Atomic;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
@@ -103,11 +103,11 @@ public class PartyType extends PartyType_Base implements Comparable<PartyType> {
 
     private void check(final String type) {
         if (type == null || type.isEmpty()) {
-            throw new DomainException("error.PartyType.invalid.type");
+            throw new OrganizationDomainException("error.PartyType.invalid.type");
         }
         final PartyType partyType = readBy(type);
         if (partyType != null && partyType != this) {
-            throw new DomainException("error.PartyType.duplicated.type", type);
+            throw new OrganizationDomainException("error.PartyType.duplicated.type", type);
         }
     }
 
@@ -131,10 +131,10 @@ public class PartyType extends PartyType_Base implements Comparable<PartyType> {
 
     private void canDelete() {
         if (!getPartiesSet().isEmpty()) {
-            throw new DomainException("error.PartyType.has.parties.cannot.delete");
+            throw new OrganizationDomainException("error.PartyType.has.parties.cannot.delete");
         }
         if (!getParentConnectionRulesSet().isEmpty() || !getChildConnectionRulesSet().isEmpty()) {
-            throw new DomainException("error.PartyType.has.connection.rules.cannot.delete");
+            throw new OrganizationDomainException("error.PartyType.has.connection.rules.cannot.delete");
         }
     }
 

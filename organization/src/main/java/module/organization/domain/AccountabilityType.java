@@ -28,8 +28,8 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
+import module.organization.domain.exceptions.OrganizationDomainException;
 import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
 import pt.ist.fenixframework.Atomic;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
@@ -126,11 +126,11 @@ public class AccountabilityType extends AccountabilityType_Base implements Compa
 
     protected void check(final String type) {
         if (type == null || type.isEmpty()) {
-            throw new DomainException("error.AccountabilityType.invalid.type");
+            throw new OrganizationDomainException("error.AccountabilityType.invalid.type");
         }
         final AccountabilityType accountabilityType = readBy(type);
         if (accountabilityType != null && accountabilityType != this) {
-            throw new DomainException("error.AccountabilityType.duplicated.type", type);
+            throw new OrganizationDomainException("error.AccountabilityType.duplicated.type", type);
         }
     }
 
@@ -154,7 +154,7 @@ public class AccountabilityType extends AccountabilityType_Base implements Compa
 
     protected void canDelete() {
         if (!getAccountabilitiesSet().isEmpty()) {
-            throw new DomainException("error.AccountabilityType.has.accountabilities.cannot.delete");
+            throw new OrganizationDomainException("error.AccountabilityType.has.accountabilities.cannot.delete");
         }
     }
 
