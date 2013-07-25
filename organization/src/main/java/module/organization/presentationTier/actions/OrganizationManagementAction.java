@@ -55,8 +55,6 @@ import pt.ist.bennu.core.domain.exceptions.DomainException;
 import pt.ist.bennu.core.presentationTier.DefaultContext;
 import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
 import pt.ist.bennu.core.presentationTier.forms.BaseForm;
-import pt.ist.bennu.portal.Application;
-import pt.ist.bennu.portal.Functionality;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.utl.ist.fenix.tools.util.StringNormalizer;
@@ -71,8 +69,6 @@ import pt.utl.ist.fenix.tools.util.StringNormalizer;
  */
 
 @Mapping(path = "/organization", formBeanClass = OrganizationManagementAction.OrganizationForm.class)
-@Application(path = "organization", bundle = OrganizationManagementAction.BUNDLE, title = "label.module.organization",
-        description = "label.module.organization", group = "#managers")
 public class OrganizationManagementAction extends ContextBaseAction {
 
     private static MyOrg getMyOrg() {
@@ -134,16 +130,9 @@ public class OrganizationManagementAction extends ContextBaseAction {
         return forward;
     }
 
-    @Functionality(app = OrganizationManagementAction.class, path = "intro", bundle = BUNDLE,
-            title = "label.manage.organization", description = "label.manage.organization", group = "#managers")
     public ActionForward intro(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws Exception {
         return forward(request, "/organization/intro.jsp");
-    }
-
-    public ActionForward app(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-            final HttpServletResponse response) throws Exception {
-        return intro(mapping, form, request, response);
     }
 
     public ActionForward viewPartyTypes(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,

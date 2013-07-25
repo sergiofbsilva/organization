@@ -58,6 +58,7 @@ import pt.ist.bennu.core.i18n.BundleUtil;
 import pt.ist.bennu.core.presentationTier.DefaultContext;
 import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
 import pt.ist.bennu.core.presentationTier.component.OrganizationChart;
+import pt.ist.bennu.portal.Application;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.utl.ist.fenix.tools.util.Pair;
@@ -69,6 +70,8 @@ import pt.utl.ist.fenix.tools.util.Pair;
  * @author Luis Cruz
  * 
  */
+@Application(path = "organization", bundle = OrganizationManagementAction.BUNDLE, title = "label.module.organization",
+        description = "label.module.organization", group = "#managers")
 public class OrganizationModelAction extends ContextBaseAction {
 
     public static class OrganizationalModelChart extends OrganizationChart<OrganizationalModel> {
@@ -575,6 +578,11 @@ public class OrganizationModelAction extends ContextBaseAction {
             child.removeParent(accountability);
         }
         return viewModel(mapping, form, request, response);
+    }
+
+    public ActionForward app(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+            final HttpServletResponse response) throws Exception {
+        return viewModels(mapping, form, request, response);
     }
 
 }
