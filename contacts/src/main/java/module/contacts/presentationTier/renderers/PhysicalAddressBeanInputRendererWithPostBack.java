@@ -34,7 +34,7 @@ import module.geography.domain.CountrySubdivisionLevelName;
 import org.apache.commons.lang.StringUtils;
 
 import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.domain.util.Address;
+import pt.ist.bennu.core.util.legacy.Address;
 import pt.ist.fenixWebFramework.renderers.InputRenderer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlComponent;

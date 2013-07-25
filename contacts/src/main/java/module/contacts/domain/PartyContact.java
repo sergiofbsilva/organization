@@ -30,22 +30,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import module.contacts.domain.exceptions.ContactsDomainException;
 import module.organization.domain.Party;
 import module.organization.domain.Person;
 
 import org.apache.commons.lang.StringUtils;
 
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.domain.groups.PersistentGroup;
-import pt.ist.bennu.core.domain.groups.Role;
+import pt.ist.bennu.core.domain.groups.legacy.PersistentGroup;
+import pt.ist.bennu.search.IndexDocument;
+import pt.ist.bennu.search.Indexable;
+import pt.ist.bennu.search.IndexableField;
+import pt.ist.bennu.search.Searchable;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.dml.runtime.Relation;
 import pt.ist.fenixframework.dml.runtime.RelationListener;
-import pt.ist.fenixframework.plugins.luceneIndexing.IndexableField;
-import pt.ist.fenixframework.plugins.luceneIndexing.domain.IndexDocument;
-import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Indexable;
-import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Searchable;
 
 /**
  * 
@@ -84,13 +83,13 @@ public abstract class PartyContact extends PartyContact_Base implements Indexabl
         // && Enterprise.isEnterprise(partyThatWillOwnTheContact))
         // return;
 
-        throw new DomainException("manage.contacts.edit.denied.nouser");
+        throw new ContactsDomainException("manage.contacts.edit.denied.nouser");
 
     }
 
     static protected void validateVisibilityGroups(Collection<PersistentGroup> visibilityGroups) {
         if (!ContactsConfigurator.getInstance().getVisibilityGroups().containsAll(visibilityGroups)) {
-            throw new DomainException("manage.contacts.wrong.visibility.groups.defined");
+            throw new ContactsDomainException("manage.contacts.wrong.visibility.groups.defined");
         }
 
     }
@@ -109,8 +108,7 @@ public abstract class PartyContact extends PartyContact_Base implements Indexabl
         public void beforeAdd(Relation<PartyContact, PersistentGroup> relation, PartyContact partyContact,
                 PersistentGroup persistentGroup) {
             if (!ContactsConfigurator.getInstance().getVisibilityGroups().contains(persistentGroup)) {
-                throw new DomainException("error.adding.contact.invalid.visibility.group",
-                        DomainException.getResourceFor("resources/ContactsResources"));
+                throw new ContactsDomainException("error.adding.contact.invalid.visibility.group");
             }
         }
 
@@ -147,11 +145,6 @@ public abstract class PartyContact extends PartyContact_Base implements Indexabl
         return document;
     }
 
-    @Override
-    public IndexMode getIndexMode() {
-        return IndexMode.MANUAL;
-    }
-
     public Person getPerson() {
         if (this.getParty() instanceof Person) {
             return (Person) this.getParty();
@@ -169,10 +162,10 @@ public abstract class PartyContact extends PartyContact_Base implements Indexabl
      */
     @Atomic
     public void setContactValue(String value) {
-        // if (UserView.getCurrentUser() != null /*&&
-        // !isEditableBy(UserView.getCurrentUser())*/) {
-        // throw new DomainException("manage.contacts.edit.denied",
-        // "resources.ContactsResources", UserView.getCurrentUser()
+        // if (Authenticate.getUser() != null /*&&
+        // !isEditableBy(Authenticate.getUser())*/) {
+        // throw new ContactsDomainException("manage.contacts.edit.denied",
+        // "resources.ContactsResources", Authenticate.getUser()
         // .getUsername());
         // }
         setValue(value);
@@ -197,9 +190,10 @@ public abstract class PartyContact extends PartyContact_Base implements Indexabl
             // edit it
             return true;
         }
-        if (Role.getRole(ContactsRoles.MODULE_CONTACTS_DOMAIN_CONTACTSEDITOR).isMember(user)) {
-            return true;
-        }
+        //TODO: What to do with Roles ?
+//        if (Role.getRole(ContactsRoles.MODULE_CONTACTS_DOMAIN_CONTACTSEDITOR).isMember(user)) {
+//            return true;
+//        }
         return false;
     }
 
@@ -348,8 +342,8 @@ public abstract class PartyContact extends PartyContact_Base implements Indexabl
         // Confirmations not done here anymore
 
         // if (!isEditableBy(currentUser))
-        // throw new DomainException("manage.contacts.edit.denied",
-        // UserView.getCurrentUser().getUsername());
+        // throw new ContactsDomainException("manage.contacts.edit.denied",
+        // Authenticate.getUser().getUsername());
         delete();
     }
 
@@ -371,7 +365,7 @@ public abstract class PartyContact extends PartyContact_Base implements Indexabl
     }
 
     @Deprecated
-    public java.util.Set<pt.ist.bennu.core.domain.groups.PersistentGroup> getVisibilityGroups() {
+    public java.util.Set<pt.ist.bennu.core.domain.groups.legacy.PersistentGroup> getVisibilityGroups() {
         return getVisibilityGroupsSet();
     }
 

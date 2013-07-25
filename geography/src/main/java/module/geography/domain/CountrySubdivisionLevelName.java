@@ -24,7 +24,7 @@
  */
 package module.geography.domain;
 
-import pt.ist.bennu.core.domain.exceptions.DomainException;
+import module.geography.domain.exceptions.GeographyDomainException;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
@@ -53,7 +53,7 @@ public class CountrySubdivisionLevelName extends CountrySubdivisionLevelName_Bas
      */
     public boolean canBeDeleted() {
         if (this.getCountry() != null) {
-            throw new DomainException("error.Party.delete.has.child.accountabilities");
+            throw new GeographyDomainException("error.Party.delete.has.child.accountabilities");
         }
         return true;
     }

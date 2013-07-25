@@ -32,8 +32,8 @@ import java.util.List;
 import module.contacts.presentationTier.KindOfPartyContact;
 import module.organization.domain.Person;
 import pt.ist.bennu.core.domain.User;
-import pt.ist.fenixframework.plugins.luceneIndexing.DomainIndexer;
-import pt.ist.fenixframework.plugins.luceneIndexing.IndexableField;
+import pt.ist.bennu.search.DomainIndexer;
+import pt.ist.bennu.search.IndexableField;
 
 /**
  * Class created to assist the {@link ContactsConfigurator} one due to the nasty
@@ -96,7 +96,7 @@ public class ContactsConfiguratorAux {
 
         if (!luceneQuery.isEmpty()) {
             listResultsBySearchField.put(KindOfPartyContact.PERSON_SEARCH,
-                    domainIndexer.expertSearch(Person.class, luceneQuery, DomainIndexer.DEFAULT_MAX_SIZE));
+                    domainIndexer.search(Person.class, luceneQuery, DomainIndexer.DEFAULT_MAX_SIZE));
         }
 
         auxPersonsToAdd = new HashSet<Person>();

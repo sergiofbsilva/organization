@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 
+import module.geography.domain.exceptions.GeographyDomainException;
 import module.geography.util.AddressPrinter;
 import module.organization.domain.Accountability;
 import module.organization.domain.Unit;
@@ -37,7 +38,6 @@ import module.organization.domain.Unit;
 import org.joda.time.LocalDate;
 
 import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
 import pt.ist.fenixframework.Atomic;
 import pt.utl.ist.fenix.tools.util.i18n.Language;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
@@ -103,7 +103,7 @@ public class Country extends Country_Base {
     @Override
     public void setIAddressPrinter(Class iAddressPrinter) {
         if (!AddressPrinter.class.isAssignableFrom(iAddressPrinter)) {
-            throw new DomainException("error.invalid.iaddressprinter");
+            throw new GeographyDomainException("error.invalid.iaddressprinter");
         }
         super.setIAddressPrinter(iAddressPrinter);
     }
@@ -123,7 +123,7 @@ public class Country extends Country_Base {
         try {
             ap = (AddressPrinter) super.getIAddressPrinter().getConstructor().newInstance();
         } catch (Exception e) {
-            throw new DomainException("error.instance.iaddressprinter", e);
+            throw new GeographyDomainException("error.instance.iaddressprinter");
         }
 
         return ap;
@@ -132,7 +132,7 @@ public class Country extends Country_Base {
         // super.getIAddressPrinter().getConstructor().newInstance();
         // } catch (Exception e) {
         // setIAddressPrinter(GeneralIAddressPrinter.class);
-        // throw new DomainException("error.instance.iaddressprinter", e);
+        // throw new GeographyDomainException("error.instance.iaddressprinter", e);
         // }
     }
 
@@ -333,6 +333,7 @@ public class Country extends Country_Base {
         }
         return one.equals(two);
     }
+
     @Deprecated
     public java.util.Set<module.geography.domain.CountrySubdivisionLevelName> getLevelName() {
         return getLevelNameSet();

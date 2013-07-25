@@ -33,7 +33,7 @@ import module.contacts.domain.PhysicalAddress;
 import module.contacts.domain.WebAddress;
 import module.contacts.presentationTier.KindOfPartyContact;
 import module.organization.domain.Party;
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
+import pt.ist.bennu.core.security.Authenticate;
 
 /**
  * 
@@ -87,7 +87,7 @@ public class ContactToCreateBean extends ContactToEditBean implements Serializab
         default:
             break;
         }
-        if (ContactsConfigurator.getInstance().isSuperEditor(UserView.getCurrentUser())) {
+        if (ContactsConfigurator.getInstance().isSuperEditor(Authenticate.getUser())) {
             toReturn = toReturn.concat(".superEditor");
         } else {
             toReturn = toReturn.concat(".regular");

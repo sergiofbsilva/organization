@@ -28,15 +28,17 @@ import module.contacts.domain.ContactsConfigurator;
 import module.contacts.domain.PartyContact;
 import module.organization.domain.Person;
 import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.fenixframework.Atomic;
+import pt.ist.bennu.core.i18n.BundleUtil;
+import pt.ist.bennu.scheduler.CronTask;
+import pt.ist.bennu.scheduler.annotation.Task;
 
 /**
  * 
  * @author João Antunes
  * 
  */
-public class IndexPersonsAndContacts extends IndexPersonsAndContacts_Base {
+@Task(englishTitle = "Index persons and contacts")
+public class IndexPersonsAndContacts extends CronTask {
 
     private static int personsTouched = 0;
 
@@ -47,15 +49,14 @@ public class IndexPersonsAndContacts extends IndexPersonsAndContacts_Base {
      */
     @Override
     public String getLocalizedName() {
-        return BundleUtil.getStringFromResourceBundle("resources/ContactsResources", "label.task.index.persons.and.contacts");
+        return BundleUtil.getString("resources/ContactsResources", "label.task.index.persons.and.contacts");
     }
 
     /* (non-Javadoc)
      * @see pt.ist.bennu.core.domain.scheduler.Task#executeTask()
      */
     @Override
-    @Atomic
-    public void executeTask() {
+    public void runTask() {
         for (Person person : MyOrg.getInstance().getPersonsSet()) {
             person.setPartyName(person.getPartyName());
             personsTouched++;
@@ -66,8 +67,8 @@ public class IndexPersonsAndContacts extends IndexPersonsAndContacts_Base {
             contactsTouched++;
         }
 
-        logInfo("Touched " + personsTouched + " persons");
-        logInfo("Touched " + contactsTouched + " contacts");
+        taskLog("Touched " + personsTouched + " persons");
+        taskLog("Touched " + contactsTouched + " contacts");
 
     }
 

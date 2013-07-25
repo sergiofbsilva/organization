@@ -3,32 +3,37 @@
 
 	<parent>
 		<groupId>pt.ist</groupId>
-		<artifactId>bennu-project</artifactId>
-		<version>1.1.0</version>
-        <relativePath />
+		<artifactId>fenix-framework-project</artifactId>
+		<version>1.1.0-SNAPSHOT</version>
+		<relativePath></relativePath>
 	</parent>
 
-	<groupId>pt.ist</groupId>
 	<artifactId>contacts</artifactId>
-	<version>1.2.0-SNAPSHOT</version>
+	<version>1.2.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>contacts</name>
 
 	<properties>
-		<version.pt.ist.bennu.core>1.1.0</version.pt.ist.bennu.core>
-		<version.pt.ist.lucene>1.1.0</version.pt.ist.lucene>
+		<version.pt.ist.bennu.core>2.0.0-SNAPSHOT</version.pt.ist.bennu.core>
+		<version.pt.ist.bennu.search>2.0.0-SNAPSHOT</version.pt.ist.bennu.search>
+		<version.pt.ist.bennu.legacy>2.0.0-SNAPSHOT</version.pt.ist.bennu.legacy>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>pt.ist</groupId>
+			<groupId>pt.ist.bennu</groupId>
 			<artifactId>bennu-core</artifactId>
 			<version>${version.pt.ist.bennu.core}</version>
 		</dependency>
 		<dependency>
-			<groupId>pt.ist</groupId>
-			<artifactId>lucene</artifactId>
-			<version>${version.pt.ist.lucene}</version>
+			<groupId>pt.ist.bennu</groupId>
+			<artifactId>bennu-search</artifactId>
+			<version>${version.pt.ist.bennu.search}</version>
+		</dependency>
+		<dependency>
+			<groupId>pt.ist.bennu</groupId>
+			<artifactId>bennu-legacy</artifactId>
+			<version>${version.pt.ist.bennu.legacy}</version>
 		</dependency>
 		<dependency>
 			<groupId>pt.ist</groupId>
@@ -43,6 +48,8 @@
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jsp-api</artifactId>
+			<version>7.0.28</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

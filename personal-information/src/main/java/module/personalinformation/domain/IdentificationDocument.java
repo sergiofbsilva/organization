@@ -26,8 +26,8 @@ package module.personalinformation.domain;
 
 import java.io.Serializable;
 
+import module.personalinformation.domain.exceptions.PersonalInformationDomainException;
 import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
 
 /**
  * 
@@ -73,13 +73,13 @@ public class IdentificationDocument extends IdentificationDocument_Base {
 
     protected void init(final PersonalInformation information, final IdentificationDocumentBean bean) {
         if (information == null) {
-            throw new DomainException("error.IdentificationDocument.invalid.personal.information");
+            throw new PersonalInformationDomainException("error.IdentificationDocument.invalid.personal.information");
         }
         if (bean.getType() == null) {
-            throw new DomainException("error.IdentificationDocument.invalid.type");
+            throw new PersonalInformationDomainException("error.IdentificationDocument.invalid.type");
         }
         if (bean.getNumber() == null || bean.getNumber().isEmpty()) {
-            throw new DomainException("error.IdentificationDocument.invalid.number");
+            throw new PersonalInformationDomainException("error.IdentificationDocument.invalid.number");
         }
         setPersonalInformation(information);
         setType(bean.getType());

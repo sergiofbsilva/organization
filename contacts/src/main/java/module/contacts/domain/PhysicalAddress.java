@@ -26,6 +26,7 @@ package module.contacts.domain;
 
 import java.util.ArrayList;
 
+import module.contacts.domain.exceptions.ContactsDomainException;
 import module.geography.domain.Country;
 import module.geography.domain.GeographicLocation;
 import module.geography.util.AddressPrinter;
@@ -34,8 +35,7 @@ import module.organization.domain.Party;
 import org.joda.time.DateTime;
 
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.domain.groups.PersistentGroup;
+import pt.ist.bennu.core.domain.groups.legacy.PersistentGroup;
 import pt.ist.fenixframework.Atomic;
 
 /**
@@ -99,7 +99,7 @@ public class PhysicalAddress extends PhysicalAddress_Base {
         for (PartyContact partyContact : party.getPartyContactsSet()) {
             if (partyContact instanceof PhysicalAddress && partyContact.getValue() == complementarAddressString
                     && ((PhysicalAddress) partyContact).getGeographicLocation().equals(geographicLocation)) {
-                throw new DomainException("error.duplicate.partyContact");
+                throw new ContactsDomainException("error.duplicate.partyContact");
             }
         }
 
@@ -127,15 +127,15 @@ public class PhysicalAddress extends PhysicalAddress_Base {
 
             Country country = geographicLocation.getCountry();
             if (country == null) {
-                // lets just throw a domainexception so that we know that there
+                // lets just throw aContactsDomainException so that we know that there
                 // is a case that shouldn't be happening
-                throw new DomainException("error.illegal.geographiclocation.structure.no.country");
+                throw new ContactsDomainException("error.illegal.geographiclocation.structure.no.country");
             }
             AddressPrinter addressPrinter;
             try {
                 addressPrinter = country.getAddressPrinter();
             } catch (Exception e) {
-                throw new DomainException("error.using.iaddressprinter", e);
+                throw new ContactsDomainException("error.using.iaddressprinter");
             }
             return addressPrinter.getFormatedAddress(this.getComplementarAddress(), getGeographicLocation().getCountry(),
                     getGeographicLocation());

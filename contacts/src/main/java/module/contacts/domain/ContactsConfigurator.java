@@ -31,8 +31,7 @@ import java.util.Set;
 import module.organization.domain.Person;
 import pt.ist.bennu.core.domain.MyOrg;
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.groups.PersistentGroup;
-import pt.ist.bennu.core.domain.groups.Role;
+import pt.ist.bennu.core.domain.groups.legacy.PersistentGroup;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.dml.runtime.Relation;
 import pt.ist.fenixframework.dml.runtime.RelationListener;
@@ -165,21 +164,25 @@ public class ContactsConfigurator extends ContactsConfigurator_Base {
      */
     @Atomic
     public void assignSuperEditorToPersonsCurrentlyIn(PersistentGroup groupToUse) {
-        Set<User> groupMembers = groupToUse.getMembers();
-        for (User user : groupMembers) {
-            user.addRoleType(getContactsRoles().MODULE_CONTACTS_DOMAIN_CONTACTSEDITOR);
-        }
+        //TODO: migrate to groups ? User no longer have relation to PeopleGroup
+//        Set<User> groupMembers = groupToUse.getMembers();
+//        for (User user : groupMembers) {
+//            user.addRoleType(getContactsRoles().MODULE_CONTACTS_DOMAIN_CONTACTSEDITOR);
+//        }
     }
 
     @Atomic
     public void assignSuperEditorRole(User user) {
-        Role.getRole(getContactsRoles().MODULE_CONTACTS_DOMAIN_CONTACTSEDITOR).addUsers(user);
+        //TODO: migrate to groups ? User no longer have relation to PeopleGroup
+//        Role.getRole(getContactsRoles().MODULE_CONTACTS_DOMAIN_CONTACTSEDITOR).addUsers(user);
 
     }
 
     @Atomic
     public void removeSuperEditorRole(User user) {
-        Role.getRole(getContactsRoles().MODULE_CONTACTS_DOMAIN_CONTACTSEDITOR).removeUsers(user);
+        //TODO: migrate to groups ? User no longer have relation to PeopleGroup
+
+//        Role.getRole(getContactsRoles().MODULE_CONTACTS_DOMAIN_CONTACTSEDITOR).removeUsers(user);
     }
 
     public List<Person> getPersonsByDetails(User userSearching, String searchName, String searchUsername, String searchPhone,
@@ -288,15 +291,18 @@ public class ContactsConfigurator extends ContactsConfigurator_Base {
     }
 
     public boolean isSuperEditor(User user) {
-        return (Role.getRole(ContactsRoles.MODULE_CONTACTS_DOMAIN_CONTACTSEDITOR).isMember(user));
+        //TODO: migrate to groups ? User no longer have relation to PeopleGroup
+//        return (Role.getRole(ContactsRoles.MODULE_CONTACTS_DOMAIN_CONTACTSEDITOR).isMember(user));
+        return false;
     }
+
     @Deprecated
     public java.util.Set<module.contacts.domain.PartyContact> getPartyContact() {
         return getPartyContactSet();
     }
 
     @Deprecated
-    public java.util.Set<pt.ist.bennu.core.domain.groups.PersistentGroup> getVisibilityGroups() {
+    public java.util.Set<pt.ist.bennu.core.domain.groups.legacy.PersistentGroup> getVisibilityGroups() {
         return getVisibilityGroupsSet();
     }
 

@@ -29,15 +29,18 @@ import java.util.HashMap;
 
 import module.geography.domain.Country;
 import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.fenixframework.Atomic;
+import pt.ist.bennu.core.i18n.BundleUtil;
+import pt.ist.bennu.scheduler.CronTask;
+import pt.ist.bennu.scheduler.annotation.Task;
 
 /**
  * 
  * @author João Antunes
  * 
  */
-public class CountryCodesClean extends CountryCodesClean_Base {
+
+@Task(englishTitle = "Clean Country Codes")
+public class CountryCodesClean extends CronTask {
 
     private int countryDeletes = 0;
 
@@ -47,12 +50,11 @@ public class CountryCodesClean extends CountryCodesClean_Base {
 
     @Override
     public String getLocalizedName() {
-        return BundleUtil.getStringFromResourceBundle("resources/GeographyResources", "label.task.clean.country.codes.with.note");
+        return BundleUtil.getString("resources/GeographyResources", "label.task.clean.country.codes.with.note");
     }
 
-    @Atomic
     @Override
-    public void executeTask() {
+    public void runTask() {
         ArrayList<Country> countriesToClean = new ArrayList<Country>();
         countriesToClean.add(Country.getPortugal());
         HashMap<String, ArrayList<Integer>> infoByCountry = new HashMap<String, ArrayList<Integer>>();
@@ -69,7 +71,7 @@ public class CountryCodesClean extends CountryCodesClean_Base {
             // }
         }
 
-        logInfo("Deleted " + countryDeletes + " countries");
+        taskLog("Deleted " + countryDeletes + " countries");
 
     }
 

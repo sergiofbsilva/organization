@@ -3,37 +3,36 @@
 
 	<parent>
 		<groupId>pt.ist</groupId>
-		<artifactId>bennu-project</artifactId>
-		<version>1.1.0</version>
-        <relativePath />
+		<artifactId>fenix-framework-project</artifactId>
+		<version>1.1.0-SNAPSHOT</version>
+		<relativePath></relativePath>
 	</parent>
-
-	<groupId>pt.ist</groupId>
+	
 	<artifactId>geography</artifactId>
-	<version>1.2.0-SNAPSHOT</version>
+	<version>1.2.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>geography</name>
 
 	<properties>
-		<version.pt.ist.bennu.core>1.1.0</version.pt.ist.bennu.core>
+		<version.pt.ist.bennu.core>2.0.0-SNAPSHOT</version.pt.ist.bennu.core>
 		<version.pt.ist.scheduler>1.1.0</version.pt.ist.scheduler>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>pt.ist</groupId>
+			<groupId>pt.ist.bennu</groupId>
 			<artifactId>bennu-core</artifactId>
+			<version>${version.pt.ist.bennu.core}</version>
+		</dependency>
+		<dependency>
+			<groupId>pt.ist.bennu</groupId>
+			<artifactId>bennu-scheduler</artifactId>
 			<version>${version.pt.ist.bennu.core}</version>
 		</dependency>
 		<dependency>
 			<groupId>pt.ist</groupId>
 			<artifactId>organization</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>pt.ist</groupId>
-			<artifactId>scheduler</artifactId>
-			<version>${version.pt.ist.scheduler}</version>
 		</dependency>
 	</dependencies>
 

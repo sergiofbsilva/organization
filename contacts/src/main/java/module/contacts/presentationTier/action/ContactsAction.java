@@ -43,6 +43,7 @@ import module.contacts.domain.Phone;
 import module.contacts.domain.PhoneType;
 import module.contacts.domain.PhysicalAddress;
 import module.contacts.domain.WebAddress;
+import module.contacts.domain.exceptions.ContactsDomainException;
 import module.contacts.presentationTier.action.bean.AddressBean;
 import module.contacts.presentationTier.action.bean.AddressBeanFactory;
 import module.contacts.presentationTier.action.bean.ContactBean;
@@ -64,12 +65,10 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.domain.groups.PersistentGroup;
-import pt.ist.bennu.core.domain.groups.Role;
+import pt.ist.bennu.core.domain.groups.legacy.PersistentGroup;
 import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
+import pt.ist.bennu.core.security.Authenticate;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.ist.fenixframework.Atomic;
@@ -89,7 +88,7 @@ public class ContactsAction extends ContextBaseAction {
 
     public final ActionForward frontPage(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) {
-        Person person = UserView.getCurrentUser().getPerson();
+        Person person = Authenticate.getUser().getPerson();
 
         ContactBean emailBean = new ContactBean();
 
@@ -103,7 +102,7 @@ public class ContactsAction extends ContextBaseAction {
             final HttpServletRequest request, final HttpServletResponse response) {
 
         ContactBean emailBean = getRenderedObject("xpto");
-        Person person = UserView.getCurrentUser().getPerson();
+        Person person = Authenticate.getUser().getPerson();
 
         // EmailAddress.createNewEmailAddress(emailBean.getValue(), person,
         // false, PartyContactType.PERSONAL,);
@@ -181,8 +180,10 @@ public class ContactsAction extends ContextBaseAction {
 
         // get the persons who have the supereditor role
         PersonsBean usersWithSuperEditorRoleBean = new PersonsBean();
-        usersWithSuperEditorRoleBean.setUsers(new ArrayList<User>(((PersistentGroup) Role.getRole(ContactsConfigurator
-                .getInstance().getContactsRoles().MODULE_CONTACTS_DOMAIN_CONTACTSEDITOR)).getMembers()));
+
+        //TODO: What to do with role ?
+//        usersWithSuperEditorRoleBean.setUsers(new ArrayList<User>(((PersistentGroup) Role.getRole(ContactsConfigurator
+//                .getInstance().getContactsRoles().MODULE_CONTACTS_DOMAIN_CONTACTSEDITOR)).getMembers()));
 
         request.setAttribute("usersWithSuperEditorRoleBean", usersWithSuperEditorRoleBean);
 
@@ -331,7 +332,7 @@ public class ContactsAction extends ContextBaseAction {
 
         // let's use the parameters to search for the person(s)
         ArrayList<Person> results =
-                new ArrayList(ContactsConfigurator.getInstance().getPersonsByDetails(UserView.getCurrentUser(),
+                new ArrayList(ContactsConfigurator.getInstance().getPersonsByDetails(Authenticate.getUser(),
                         personSearchBean.getSearchName(), personSearchBean.getSearchUsername(),
                         personSearchBean.getSearchPhone(), personSearchBean.getSearchPhoneType(),
                         personSearchBean.getSearchAddress(), personSearchBean.getSearchWebAddress(),
@@ -432,15 +433,15 @@ public class ContactsAction extends ContextBaseAction {
             // editor - if it can edit the contacts
             person = FenixFramework.getDomainObject(request.getParameter("personEId"));
             if (person == null) {
-                throw new DomainException("manage.contacts.edit.error.noPerson", "resources.ContactsResources");
+                throw new ContactsDomainException("manage.contacts.edit.error.noPerson", "resources.ContactsResources");
             }
-            if (!ContactsConfigurator.getInstance().isAllowedToEditContacts(UserView.getCurrentUser(), person)) {
-                throw new DomainException("manage.contacts.edit.denied.forPerson", "resources.ContactsResources",
+            if (!ContactsConfigurator.getInstance().isAllowedToEditContacts(Authenticate.getUser(), person)) {
+                throw new ContactsDomainException("manage.contacts.edit.denied.forPerson", "resources.ContactsResources",
                         person.getName());
             }
 
         } else {
-            person = UserView.getCurrentUser().getPerson();
+            person = Authenticate.getUser().getPerson();
         }
 
         request.setAttribute("person", person);
@@ -492,9 +493,9 @@ public class ContactsAction extends ContextBaseAction {
         // NOTE: this confirmations should not be done here!
 
         // // check if the contact can be edited or not by the user
-        // if (!contactToDelete.isEditableBy(UserView.getCurrentUser()))
-        // throw new DomainException("manage.contacts.edit.denied",
-        // UserView.getCurrentUser().getUsername());
+        // if (!contactToDelete.isEditableBy(Authenticate.getUser()))
+        // throw newContactsDomainException("manage.contacts.edit.denied",
+        // Authenticate.getUser().getUsername());
 
         // let's set the personEId so that it is caught by the editContacts and
         // we continue to edit the contacts of who we have been editing
@@ -502,7 +503,7 @@ public class ContactsAction extends ContextBaseAction {
         // contactToDelete.getOwner().getExternalId());
 
         PartyContact contactToDelete = getDomainObject(request, "partyContactOid");
-        contactToDelete.deleteByUser(UserView.getCurrentUser());
+        contactToDelete.deleteByUser(Authenticate.getUser());
         return editContacts(mapping, form, request, response);
 
     }
@@ -619,7 +620,7 @@ public class ContactsAction extends ContextBaseAction {
             final HttpServletRequest request, final HttpServletResponse response) {
         ContactToCreateBean contactToCreateBean = getRenderedObject();
 
-        User userCreatingTheContact = UserView.getCurrentUser();
+        User userCreatingTheContact = Authenticate.getUser();
         String value = contactToCreateBean.getValue();
         Party party = contactToCreateBean.getParty();
         Boolean isDefaultContact = new Boolean(contactToCreateBean.isDefaultContact());

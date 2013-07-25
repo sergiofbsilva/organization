@@ -26,13 +26,13 @@ package module.contacts.domain;
 
 import java.util.Collection;
 
+import module.contacts.domain.exceptions.ContactsDomainException;
 import module.organization.domain.Party;
 
 import org.joda.time.DateTime;
 
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.domain.groups.PersistentGroup;
+import pt.ist.bennu.core.domain.groups.legacy.PersistentGroup;
 import pt.ist.fenixframework.Atomic;
 
 /**
@@ -82,7 +82,7 @@ public class EmailAddress extends EmailAddress_Base {
         for (PartyContact partyContact : party.getPartyContactsSet()) {
             if (partyContact instanceof EmailAddress && partyContact.getValue() == emailAddress
                     && partyContactType.equals(partyContact.getType())) {
-                throw new DomainException("error.duplicate.partyContact");
+                throw new ContactsDomainException("error.duplicate.partyContact");
             }
         }
 

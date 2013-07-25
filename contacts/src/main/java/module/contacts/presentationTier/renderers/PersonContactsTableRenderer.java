@@ -36,8 +36,8 @@ import module.contacts.domain.PhoneType;
 import module.contacts.domain.PhysicalAddress;
 import module.contacts.domain.WebAddress;
 import module.organization.domain.Person;
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.User;
+import pt.ist.bennu.core.security.Authenticate;
 import pt.ist.fenixWebFramework.renderers.OutputRenderer;
 import pt.ist.fenixWebFramework.renderers.components.Face;
 import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
@@ -305,7 +305,7 @@ public class PersonContactsTableRenderer extends OutputRenderer {
 
     protected List<MetaObject> getFilteredContacts(Collection<PartyContact> unfilteredContacts) {
 
-        User currentUser = UserView.getCurrentUser();
+        User currentUser = Authenticate.getUser();
         List<MetaObject> contacts = new ArrayList<MetaObject>();
 
         if (currentUser == null) {

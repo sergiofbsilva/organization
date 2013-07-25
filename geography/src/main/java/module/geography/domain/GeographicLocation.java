@@ -28,12 +28,12 @@ import java.text.Collator;
 import java.util.Collection;
 import java.util.Comparator;
 
+import module.geography.domain.exceptions.GeographyDomainException;
 import module.organization.domain.AccountabilityType;
 import module.organization.domain.AccountabilityType.AccountabilityTypeBean;
 import module.organization.domain.PartyType;
 import module.organization.domain.Unit;
 import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
 import pt.utl.ist.fenix.tools.util.i18n.Language;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
@@ -104,7 +104,7 @@ public abstract class GeographicLocation extends GeographicLocation_Base impleme
     protected GeographicLocation getParentLocation() {
         Collection<Unit> parents = getUnit().getParentUnits(AccountabilityType.readBy(GEOGRAPHIC_ACCOUNTABILITY_TYPE_NAME));
         if (parents.size() != 1) {
-            throw new DomainException("error.geography.invalid-organizational-structure");
+            throw new GeographyDomainException("error.geography.invalid-organizational-structure");
         }
         return parents.iterator().next().getGeographicLocation();
     }

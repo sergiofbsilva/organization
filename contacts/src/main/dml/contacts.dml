@@ -63,8 +63,6 @@ class ContactsConfigurator {
             String url (REQUIRED);
     }
     
-class task.IndexPersonsAndContacts extends .pt.ist.bennu.core.domain.scheduler.Task {
-}    
     
 relation MyOrgContactsConfigurator {
 	.pt.ist.bennu.core.domain.MyOrg playsRole myOrg {
@@ -76,14 +74,14 @@ relation MyOrgContactsConfigurator {
 }
 
 relation PersistentGroupContactsConfigurator {
-	.pt.ist.bennu.core.domain.groups.PersistentGroup playsRole visibilityGroups {
+	.pt.ist.bennu.core.domain.groups.legacy.PersistentGroup playsRole visibilityGroups {
 		multiplicity *;
 	}
 	ContactsConfigurator playsRole contactsConfigurator;
 }
 
 relation GroupAliasPersistentGroup{
-	.pt.ist.bennu.core.domain.groups.PersistentGroup playsRole persistentGroupAlias {
+	.pt.ist.bennu.core.domain.groups.legacy.PersistentGroup playsRole persistentGroupAlias {
 		multiplicity 0..1;
 	}
 	GroupAlias playsRole groupAlias {
@@ -117,7 +115,7 @@ relation GeographicLocationPhysicalAddress {
 
 
 relation PersistentGroupPartyContact {
-	.pt.ist.bennu.core.domain.groups.PersistentGroup playsRole visibilityGroups {
+	.pt.ist.bennu.core.domain.groups.legacy.PersistentGroup playsRole visibilityGroups {
 		multiplicity *;
 	}
 	PartyContact playsRole visibleContacts {

@@ -24,14 +24,35 @@
  */
 package module.geography.domain.task;
 
-import pt.ist.bennu.core.util.BundleUtil;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.util.ArrayList;
+
+import module.geography.domain.Country;
+import module.geography.domain.CountrySubdivision;
+import module.organization.domain.Accountability;
+
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+
+import pt.ist.bennu.core.i18n.BundleUtil;
+import pt.ist.bennu.core.util.ConfigurationManager;
+import pt.ist.bennu.scheduler.CronTask;
+import pt.ist.bennu.scheduler.annotation.Task;
+import pt.utl.ist.fenix.tools.util.i18n.Language;
+import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
  * 
  * @author João Antunes
  * 
  */
-public class PortugueseDistrictImport extends PortugueseDistrictImport_Base {
+@Task(englishTitle = "Import portuguese districts")
+public class PortugueseDistrictImport extends CronTask {
 
     public PortugueseDistrictImport() {
         super();
@@ -39,19 +60,161 @@ public class PortugueseDistrictImport extends PortugueseDistrictImport_Base {
 
     @Override
     public String getLocalizedName() {
-        return BundleUtil.getStringFromResourceBundle("resources/GeographyResources", "label.task.ctt.portugal.districts.import");
+        return BundleUtil.getString("resources/GeographyResources", "label.task.ctt.portugal.districts.import");
     }
 
-    protected void auxLogInfo(String message) {
-        logInfo(message);
-    }
+    private static final String CTT_DISTRICTFILE = "/distritos.txt";
+
+    Country portugal;
+
+    protected int additions = 0;
+
+    protected int deletions = 0;
+
+    protected int modifications = 0;
+
+    protected int touches = 0;
+
+    private final MultiLanguageString districtLevelName = new MultiLanguageString().with(Language.pt, "Distrito").with(
+            Language.en, "District");;
 
     @Override
-    public void executeTask() {
-        // let's initialize the auxiliary class due to the the nasty injector
-        // errors
-        PortugueseDistrictImportAuxiliaryServices aux = PortugueseDistrictImportAuxiliaryServices.getInstance();
-        aux.executeTask(this);
+    public void runTask() {
+        // let's retrieve Portugal, if it doesn't exist, we must create it
+        portugal = Country.getPortugal();
+        LineNumberReader reader = null;
+        ArrayList<CountrySubdivision> districtsOnFile = new ArrayList<CountrySubdivision>();
+        ArrayList<CountrySubdivision> existingDistricts = new ArrayList<CountrySubdivision>();
+        try {
+            File file = new File(ConfigurationManager.getProperty("modules.geography.file.import.location") + CTT_DISTRICTFILE);
+            if (getLastRun() == null || file.lastModified() > getLastRun().getMillis()) {
+                DateTime lastReview = new DateTime(file.lastModified());
+                FileInputStream fileReader = new FileInputStream(file);
+                reader = new LineNumberReader(new InputStreamReader(fileReader, "ISO-8859-1"));
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(";");
+                    String districtCode = parts[0];
+                    String districtName = parts[1];
+
+                    CountrySubdivision district = portugal.getChildByCode(districtCode);
+                    if (district == null) {
+                        district = createDistrict(districtCode, districtName, lastReview);
+                    } else {
+                        modifyDistrict(district, districtCode, districtName, "", lastReview);
+                    }
+                    districtsOnFile.add(district);
+                } // 'remove' all of the districts in
+                  // excess i.e. make their // accountabilities end
+
+                // getting all of the existing districts
+                for (CountrySubdivision countrySubdivision : portugal.getChildren()) {
+                    if (countrySubdivision.getLevelName().getContent(Language.pt)
+                            .equalsIgnoreCase(districtLevelName.getContent(Language.pt))) {
+                        existingDistricts.add(countrySubdivision);
+                    }
+                } // let's assert
+                  // which ones are in excess and remove them
+                existingDistricts.removeAll(districtsOnFile);
+                for (CountrySubdivision countrySubdivision : existingDistricts) {
+                    removeDistrict(countrySubdivision);
+                }
+                taskLog("File last modification was: " + lastReview);
+                taskLog(additions + " districts added.");
+                taskLog(touches + " districts unmodified, but whose date has changed.");
+                taskLog(modifications + " districts modified");
+            } else {
+                taskLog("File unmodified, nothing imported.");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+            }
+        }
+    }
+
+    private DateTime getLastRun() {
+        //TODO: get last run of task
+        return new DateTime(0);
+    }
+
+    /**
+     * It modifies the data or touches (sets the last review date to the date
+     * that it got)
+     * 
+     * @param district
+     *            the already-existing district
+     * @param districtCode
+     *            the code of the district
+     * @param districtName
+     *            the name of the district
+     * @param lastReview
+     *            the date of the last review of the file used to do this import
+     */
+
+    protected void modifyDistrict(CountrySubdivision district, String districtCode, String districtName, String districtAcronym,
+            DateTime lastReview) {
+        String originalDistrictName = district.getName().getContent(Language.pt);
+        String originalDistrictAcronym = district.getAcronym();
+
+        // let's check if there are changes on the data:
+        if (!originalDistrictName.equals(districtName) || !originalDistrictAcronym.equals(districtAcronym)
+                || !district.getLevelName().equals(districtLevelName)) {
+
+            removeDistrict(district);
+            deletions--;
+            // create the new district!
+            // lets correct the counters afterwards!
+            createDistrict(districtCode, districtName, lastReview);
+            additions--;
+            modifications++;
+        }
+        // if not let's just 'touch' it
+        else {
+            touchDistrict(district, lastReview);
+        }
+    }
+
+    protected void removeDistrict(CountrySubdivision district) {
+        // modify the district by setting the accountability of the last one
+        // end before the date of the last review
+        Accountability activeAccountability = null;
+        for (Accountability accountability : district.getUnit().getParentAccountabilities(
+                district.getOrCreateAccountabilityType())) {
+            if (accountability.isActiveNow()) {
+                activeAccountability = accountability;
+            }
+        }
+
+        if (activeAccountability != null) {
+            // make the accountability expire a minimal measure of time before
+            // of
+            // the current date
+            LocalDate endDate = new LocalDate();
+            // endDate = endDate.minusDays(1);
+            activeAccountability.setEndDate(endDate);
+        }
+        deletions++;
+    }
+
+    protected void touchDistrict(CountrySubdivision district, DateTime lastReview) {
+        district.setLastReview(lastReview);
+        touches++;
+    }
+
+    protected CountrySubdivision createDistrict(String districtCode, String districtName, DateTime lastReview) {
+        CountrySubdivision district = new CountrySubdivision(portugal, districtName, "", districtCode);
+        district.setLevelName(districtLevelName, false);
+        district.setLastReview(lastReview);
+        additions++;
+        return district;
     }
 
 }

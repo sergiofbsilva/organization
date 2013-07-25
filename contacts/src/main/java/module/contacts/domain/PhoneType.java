@@ -26,8 +26,8 @@ package module.contacts.domain;
 
 import java.util.ResourceBundle;
 
+import pt.ist.bennu.search.IndexableField;
 import pt.ist.fenixWebFramework.rendererExtensions.util.IPresentableEnum;
-import pt.ist.fenixframework.plugins.luceneIndexing.IndexableField;
 import pt.utl.ist.fenix.tools.util.i18n.Language;
 
 /**

@@ -29,12 +29,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 
+import module.geography.domain.exceptions.GeographyDomainException;
 import module.organization.domain.Accountability;
 import module.organization.domain.Unit;
 
 import org.joda.time.LocalDate;
 
-import pt.ist.bennu.core.domain.exceptions.DomainException;
 import pt.ist.fenixframework.Atomic;
 import pt.utl.ist.fenix.tools.util.i18n.Language;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
@@ -101,7 +101,7 @@ public class CountrySubdivision extends CountrySubdivision_Base {
 
     public CountrySubdivision getParentSubdivision() {
         if (getLevel() == 1) {
-            throw new DomainException("error.geography.requesting-parent-subdivision-at-level-one");
+            throw new GeographyDomainException("error.geography.requesting-parent-subdivision-at-level-one");
         }
         return (CountrySubdivision) getParentLocation();
     }

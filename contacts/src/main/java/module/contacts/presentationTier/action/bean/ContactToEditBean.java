@@ -40,8 +40,8 @@ import module.contacts.domain.PartyContactType;
 import module.contacts.domain.Phone;
 import module.contacts.domain.PhoneType;
 import module.contacts.domain.PhysicalAddress;
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.domain.groups.PersistentGroup;
+import pt.ist.bennu.core.domain.groups.legacy.PersistentGroup;
+import pt.ist.bennu.core.security.Authenticate;
 
 /**
  * 
@@ -80,7 +80,7 @@ public class ContactToEditBean implements Serializable {
     protected ContactToEditBean() {
         setValue("");
         setVisibilityGroups(new ArrayList<PersistentGroup>());
-        setSuperEditor(ContactsConfigurator.getInstance().isSuperEditor(UserView.getCurrentUser()));
+        setSuperEditor(ContactsConfigurator.getInstance().isSuperEditor(Authenticate.getUser()));
     }
 
     public ContactToEditBean(String forwardPath) {
@@ -92,7 +92,7 @@ public class ContactToEditBean implements Serializable {
         wrappedContact = contactToWrap;
         value = getWrappedContact().getValue();
         partyContactType = getWrappedContact().getType();
-        superEditor = ContactsConfigurator.getInstance().isSuperEditor(UserView.getCurrentUser());
+        superEditor = ContactsConfigurator.getInstance().isSuperEditor(Authenticate.getUser());
 
         setVisibilityGroups(new ArrayList<PersistentGroup>());
         getVisibilityGroups().addAll(getWrappedContact().getVisibilityGroups());

@@ -26,9 +26,9 @@ package module.personalinformation.domain;
 
 import java.io.Serializable;
 
-import org.joda.time.LocalDate;
+import module.personalinformation.domain.exceptions.PersonalInformationDomainException;
 
-import pt.ist.bennu.core.domain.exceptions.DomainException;
+import org.joda.time.LocalDate;
 
 /**
  * 
@@ -82,13 +82,13 @@ public class IdentityCard extends IdentityCard_Base {
 
     private void init(final IdentityCardBean bean) {
         if (bean.getEmissionDate() == null) {
-            throw new DomainException("error.IdentificationDocument.invalid.emission.date");
+            throw new PersonalInformationDomainException("error.IdentificationDocument.invalid.emission.date");
         }
         if (bean.getExpirationDate() == null) {
-            throw new DomainException("error.IdentificationDocument.invalid.expiration.date");
+            throw new PersonalInformationDomainException("error.IdentificationDocument.invalid.expiration.date");
         }
         if (bean.getEmissionLocation() == null || bean.getEmissionLocation().isEmpty()) {
-            throw new DomainException("error.IdentificationDocument.invalid.emission.location");
+            throw new PersonalInformationDomainException("error.IdentificationDocument.invalid.emission.location");
         }
         setEmissionDate(bean.getEmissionDate());
         setExpirationDate(bean.getExpirationDate());

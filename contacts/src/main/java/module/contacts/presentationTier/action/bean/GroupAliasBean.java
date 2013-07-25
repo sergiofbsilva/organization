@@ -26,7 +26,7 @@ package module.contacts.presentationTier.action.bean;
 
 import java.io.Serializable;
 
-import pt.ist.bennu.core.domain.groups.PersistentGroup;
+import pt.ist.bennu.core.domain.groups.legacy.PersistentGroup;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**

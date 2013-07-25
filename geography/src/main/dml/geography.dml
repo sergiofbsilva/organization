@@ -59,17 +59,6 @@ class module.geography.domain.PostalExtension extends module.geography.domain.Co
 	String postalBranch;
 }
 
-class module.geography.domain.task.CountryCodesImport extends pt.ist.bennu.core.domain.scheduler.Task {
-}
-class module.geography.domain.task.PortugueseDistrictImport extends pt.ist.bennu.core.domain.scheduler.Task {
-}
-class module.geography.domain.task.CleanCountrySubLevels extends pt.ist.bennu.core.domain.scheduler.Task {
-}
-class module.geography.domain.task.CountryCodesClean extends pt.ist.bennu.core.domain.scheduler.Task {
-}
-class module.geography.domain.task.PortugueseMunicipalitiesImport extends pt.ist.bennu.core.domain.scheduler.Task {
-}
-
 
 relation MyOrgCountries {
 	pt.ist.bennu.core.domain.MyOrg playsRole myOrg;

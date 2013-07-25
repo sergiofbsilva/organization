@@ -36,6 +36,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 
+import pt.ist.bennu.scheduler.CronTask;
+import pt.ist.bennu.scheduler.annotation.Task;
 import pt.utl.ist.fenix.tools.util.i18n.Language;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
@@ -48,11 +50,12 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
  * @author Pedro Santos
  * 
  */
-public class CountryCodesImport extends CountryCodesImport_Base {
+@Task(englishTitle = "Import country codes from iso3166 csv")
+public class CountryCodesImport extends CronTask {
     private static final String ISO3166_FILE = "/iso-3166.csv";
 
     @Override
-    public void executeTask() {
+    public void runTask() {
         InputStream stream = getClass().getResourceAsStream(ISO3166_FILE);
         try {
             List<String> lines = IOUtils.readLines(stream);

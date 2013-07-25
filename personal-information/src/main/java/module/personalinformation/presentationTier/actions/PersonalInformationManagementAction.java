@@ -35,14 +35,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import pt.ist.bennu.core.domain.RoleType;
-import pt.ist.bennu.core.domain.VirtualHost;
-import pt.ist.bennu.core.domain.contents.ActionNode;
-import pt.ist.bennu.core.domain.contents.Node;
-import pt.ist.bennu.core.domain.groups.Role;
+import pt.ist.bennu.core.i18n.BundleUtil;
 import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
-import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.fenixWebFramework.servlets.functionalities.CreateNodeAction;
+import pt.ist.bennu.portal.Application;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 
 @Mapping(path = "/personalInformation")
@@ -52,6 +47,8 @@ import pt.ist.fenixWebFramework.struts.annotations.Mapping;
  * @author Luis Cruz
  * 
  */
+@Application(bundle = "resources.PersonalInformationResources", description = "add.node.manage.personal.information",
+        path = "personalInformation", title = "label.module.personal.information")
 public class PersonalInformationManagementAction extends ContextBaseAction {
 
     public static class PersonalInformationView extends PartyViewHook {
@@ -68,8 +65,7 @@ public class PersonalInformationManagementAction extends ContextBaseAction {
 
         @Override
         public String getPresentationName() {
-            return BundleUtil.getStringFromResourceBundle("resources.PersonalInformationResources",
-                    "label.personalInformationView");
+            return BundleUtil.getString("resources.PersonalInformationResources", "label.personalInformationView");
         }
 
         @Override
@@ -78,24 +74,24 @@ public class PersonalInformationManagementAction extends ContextBaseAction {
         }
     }
 
-    @CreateNodeAction(bundle = "PERSONAL_INFORMATION_RESOURCES", key = "add.node.manage.personal.information",
-            groupKey = "label.module.personal.information")
-    public final ActionForward createOrganizationNode(final ActionMapping mapping, final ActionForm form,
-            final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-
-        final VirtualHost virtualHost = getDomainObject(request, "virtualHostToManageId");
-        final Node parentOfNodes = getDomainObject(request, "parentOfNodesToManageId");
-
-        final ActionNode topActionNode =
-                ActionNode.createActionNode(virtualHost, parentOfNodes, "/personalInformation", "intro",
-                        "resources.PersonalInformationResources", "label.module.personal.information",
-                        Role.getRole(RoleType.MANAGER));
-
-        ActionNode.createActionNode(virtualHost, topActionNode, "/personalInformation", "manage",
-                "resources.PersonalInformationResources", "label.manage.information", Role.getRole(RoleType.MANAGER));
-
-        return forwardToMuneConfiguration(request, virtualHost, topActionNode);
-    }
+//    @CreateNodeAction(bundle = "PERSONAL_INFORMATION_RESOURCES", key = "add.node.manage.personal.information",
+//            groupKey = "label.module.personal.information")
+//    public final ActionForward createOrganizationNode(final ActionMapping mapping, final ActionForm form,
+//            final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+//
+//        final VirtualHost virtualHost = getDomainObject(request, "virtualHostToManageId");
+//        final Node parentOfNodes = getDomainObject(request, "parentOfNodesToManageId");
+//
+//        final ActionNode topActionNode =
+//                ActionNode.createActionNode(virtualHost, parentOfNodes, "/personalInformation", "intro",
+//                        "resources.PersonalInformationResources", "label.module.personal.information",
+//                        Role.getRole(RoleType.MANAGER));
+//
+//        ActionNode.createActionNode(virtualHost, topActionNode, "/personalInformation", "manage",
+//                "resources.PersonalInformationResources", "label.manage.information", Role.getRole(RoleType.MANAGER));
+//
+//        return forwardToMuneConfiguration(request, virtualHost, topActionNode);
+//    }
 
     public ActionForward intro(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws Exception {
@@ -107,4 +103,8 @@ public class PersonalInformationManagementAction extends ContextBaseAction {
         return forward(request, "/personalInformation/manage.jsp");
     }
 
+    public ActionForward app(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+            final HttpServletResponse response) throws Exception {
+        return intro(mapping, form, request, response);
+    }
 }

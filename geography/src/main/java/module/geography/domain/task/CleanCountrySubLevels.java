@@ -31,8 +31,9 @@ import module.geography.domain.Country;
 import module.geography.domain.CountrySubdivision;
 import module.geography.domain.CountrySubdivisionLevelName;
 import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.fenixframework.Atomic;
+import pt.ist.bennu.core.i18n.BundleUtil;
+import pt.ist.bennu.scheduler.CronTask;
+import pt.ist.bennu.scheduler.annotation.Task;
 
 /**
  * *WARNING* This task shouldn't be called to delete the districts as it removes
@@ -44,15 +45,16 @@ import pt.ist.fenixframework.Atomic;
  * @author João Antunes
  * 
  */
-public class CleanCountrySubLevels extends CleanCountrySubLevels_Base {
+
+@Task(englishTitle = "Clean Country SubLevels")
+public class CleanCountrySubLevels extends CronTask {
 
     /* (non-Javadoc)
      * @see pt.ist.bennu.core.domain.scheduler.Task#getLocalizedName()
      */
     @Override
     public String getLocalizedName() {
-        return BundleUtil.getStringFromResourceBundle("resources/GeographyResources",
-                "label.task.clean.country.sublevels.with.note");
+        return BundleUtil.getString("resources/GeographyResources", "label.task.clean.country.sublevels.with.note");
     }
 
     private int countrySubDivisionLevelNameDeletes = 0;
@@ -62,9 +64,8 @@ public class CleanCountrySubLevels extends CleanCountrySubLevels_Base {
     /* (non-Javadoc)
      * @see pt.ist.bennu.core.domain.scheduler.Task#executeTask()
      */
-    @Atomic
     @Override
-    public void executeTask() {
+    public void runTask() {
         // add to an array all of the countries one wants to clean the sublevels
         ArrayList<Country> countriesToClean = new ArrayList<Country>();
         countriesToClean.add(Country.getPortugal());
@@ -96,10 +97,10 @@ public class CleanCountrySubLevels extends CleanCountrySubLevels_Base {
         }
 
         for (String country : infoByCountry.keySet()) {
-            logInfo("Cleaned the following registries for " + country + ":");
+            taskLog("Cleaned the following registries for " + country + ":");
             ArrayList<Integer> integers = infoByCountry.get(country);
-            logInfo("CountrySubDivision deletes: " + integers.get(0));
-            logInfo("CountrySubDivisionLevelName deletes: " + integers.get(1));
+            taskLog("CountrySubDivision deletes: " + integers.get(0));
+            taskLog("CountrySubDivisionLevelName deletes: " + integers.get(1));
         }
 
     }

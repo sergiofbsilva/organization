@@ -28,7 +28,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import pt.ist.bennu.core.domain.groups.PersistentGroup;
+import pt.ist.bennu.core.domain.groups.legacy.PersistentGroup;
 
 /**
  * 

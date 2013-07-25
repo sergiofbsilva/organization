@@ -30,8 +30,8 @@ import module.contacts.domain.ContactsConfigurator;
 import module.contacts.domain.EmailAddress;
 import module.contacts.domain.PhysicalAddress;
 import module.contacts.domain.WebAddress;
+import pt.ist.bennu.search.IndexableField;
 import pt.ist.fenixWebFramework.rendererExtensions.util.IPresentableEnum;
-import pt.ist.fenixframework.plugins.luceneIndexing.IndexableField;
 import pt.utl.ist.fenix.tools.util.i18n.Language;
 
 /**

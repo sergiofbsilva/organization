@@ -24,7 +24,7 @@
  */
 package module.contacts.domain;
 
-import pt.ist.bennu.core.domain.groups.IRoleEnum;
+import pt.ist.bennu.core.domain.groups.legacy.IRoleEnum;
 
 /**
  * 
@@ -41,7 +41,7 @@ public enum ContactsRoles implements IRoleEnum {
     }
 
     @Override
-    public String getLocalizedName() {
+    public String getPresentationName() {
         return getRoleName();
     }
 
