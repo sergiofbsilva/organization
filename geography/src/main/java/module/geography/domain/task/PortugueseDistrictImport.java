@@ -142,7 +142,7 @@ public class PortugueseDistrictImport extends CronTask {
 
     private DateTime getLastRun() {
         //TODO: get last run of task
-        return new DateTime(0);
+        return null;
     }
 
     /**

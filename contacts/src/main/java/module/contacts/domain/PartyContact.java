@@ -38,6 +38,7 @@ import org.apache.commons.lang.StringUtils;
 
 import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.domain.groups.legacy.PersistentGroup;
+import pt.ist.bennu.core.domain.groups.legacy.Role;
 import pt.ist.bennu.search.IndexDocument;
 import pt.ist.bennu.search.Indexable;
 import pt.ist.bennu.search.IndexableField;
@@ -190,10 +191,9 @@ public abstract class PartyContact extends PartyContact_Base implements Indexabl
             // edit it
             return true;
         }
-        //TODO: What to do with Roles ?
-//        if (Role.getRole(ContactsRoles.MODULE_CONTACTS_DOMAIN_CONTACTSEDITOR).isMember(user)) {
-//            return true;
-//        }
+        if (Role.getRole(ContactsRoles.MODULE_CONTACTS_DOMAIN_CONTACTSEDITOR).isMember(user)) {
+            return true;
+        }
         return false;
     }
 
