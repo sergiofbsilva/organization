@@ -229,7 +229,7 @@ public class OrganizationModelAction extends ContextBaseAction {
 
     public static void addHeadToLayoutContext(final HttpServletRequest request) {
         final DefaultContext layoutContext = (DefaultContext) getContext(request);
-        layoutContext.setHead("/organization/layoutContext/head.jsp");
+        layoutContext.addHead("/organization/layoutContext/head.jsp");
     }
 
     @Override
