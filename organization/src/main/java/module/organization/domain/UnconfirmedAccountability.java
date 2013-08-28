@@ -31,7 +31,7 @@ import org.joda.time.LocalDate;
 
 import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.security.Authenticate;
-import pt.ist.bennu.core.util.legacy.BundleUtil;
+import pt.ist.bennu.core.util.legacy.LegacyBundleUtil;
 import pt.ist.fenixframework.Atomic;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
@@ -78,7 +78,7 @@ public class UnconfirmedAccountability extends UnconfirmedAccountability_Base {
     }
 
     private static MultiLanguageString getLocalizedName() {
-        return BundleUtil.getMultilanguageString(ACCOUNTABILITY_TYPE_NAME_BUNDLE, ACCOUNTABILITY_TYPE_NAME_KEY);
+        return LegacyBundleUtil.getMultilanguageString(ACCOUNTABILITY_TYPE_NAME_BUNDLE, ACCOUNTABILITY_TYPE_NAME_KEY);
     }
 
     private static AccountabilityType createAccountabilityType() {
