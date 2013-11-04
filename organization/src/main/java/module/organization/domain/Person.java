@@ -24,6 +24,19 @@
  */
 package module.organization.domain;
 
+import pt.ist.bennu.core.domain.MyOrg;
+import pt.ist.bennu.core.domain.User;
+import pt.ist.bennu.core.domain.User.UserPresentationStrategy;
+import pt.ist.bennu.search.IndexDocument;
+import pt.ist.bennu.search.Indexable;
+import pt.ist.bennu.search.IndexableField;
+import pt.ist.bennu.search.Searchable;
+
+import pt.ist.fenixframework.Atomic;
+
+import pt.utl.ist.fenix.tools.util.StringNormalizer;
+import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,17 +45,6 @@ import java.util.Set;
 import module.organization.domain.PartyType.PartyTypeBean;
 
 import org.joda.time.LocalDate;
-
-import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.User.UserPresentationStrategy;
-import pt.ist.bennu.search.IndexDocument;
-import pt.ist.bennu.search.Indexable;
-import pt.ist.bennu.search.IndexableField;
-import pt.ist.bennu.search.Searchable;
-import pt.ist.fenixframework.Atomic;
-import pt.utl.ist.fenix.tools.util.StringNormalizer;
-import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
  * 
@@ -249,8 +251,8 @@ public class Person extends Person_Base implements Searchable, Indexable {
     @Override
     public IndexDocument getDocumentToIndex() {
         IndexDocument indexDocument = new IndexDocument(this);
-        indexDocument.indexField(IndexableFields.PERSON_NAME, this.getName());
-        indexDocument.indexField(IndexableFields.PERSON_USERNAME, this.getUser().getUsername());
+        indexDocument.indexText(IndexableFields.PERSON_NAME, this.getName());
+        indexDocument.indexString(IndexableFields.PERSON_USERNAME, this.getUser().getUsername());
         return indexDocument;
     }
 

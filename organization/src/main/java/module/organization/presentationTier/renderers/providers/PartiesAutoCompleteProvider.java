@@ -24,6 +24,10 @@
  */
 package module.organization.presentationTier.renderers.providers;
 
+import pt.ist.bennu.core.domain.MyOrg;
+import pt.ist.bennu.core.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
+import pt.utl.ist.fenix.tools.util.StringNormalizer;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,9 +37,6 @@ import java.util.Map;
 import module.organization.domain.Party;
 import module.organization.domain.Person;
 import module.organization.domain.Unit;
-import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
-import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
 /**
  * 
@@ -43,10 +44,10 @@ import pt.utl.ist.fenix.tools.util.StringNormalizer;
  * @author Paulo Abrantes
  * 
  */
-public class PartiesAutoCompleteProvider implements AutoCompleteProvider {
+public class PartiesAutoCompleteProvider implements AutoCompleteProvider<Party> {
 
     @Override
-    public Collection getSearchResults(Map<String, String> argsMap, String value, int maxCount) {
+    public Collection<Party> getSearchResults(Map<String, String> argsMap, String value, int maxCount) {
         final List<Party> parties = new ArrayList<Party>();
 
         final String trimmedValue = value.trim();

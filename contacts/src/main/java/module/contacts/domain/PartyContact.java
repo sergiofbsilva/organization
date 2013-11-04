@@ -24,6 +24,18 @@
  */
 package module.contacts.domain;
 
+import pt.ist.bennu.core.domain.User;
+import pt.ist.bennu.core.domain.groups.legacy.PersistentGroup;
+import pt.ist.bennu.core.domain.groups.legacy.Role;
+import pt.ist.bennu.search.IndexDocument;
+import pt.ist.bennu.search.Indexable;
+import pt.ist.bennu.search.IndexableField;
+import pt.ist.bennu.search.Searchable;
+
+import pt.ist.fenixframework.Atomic;
+import pt.ist.fenixframework.dml.runtime.Relation;
+import pt.ist.fenixframework.dml.runtime.RelationListener;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,17 +47,6 @@ import module.organization.domain.Party;
 import module.organization.domain.Person;
 
 import org.apache.commons.lang.StringUtils;
-
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.groups.legacy.PersistentGroup;
-import pt.ist.bennu.core.domain.groups.legacy.Role;
-import pt.ist.bennu.search.IndexDocument;
-import pt.ist.bennu.search.Indexable;
-import pt.ist.bennu.search.IndexableField;
-import pt.ist.bennu.search.Searchable;
-import pt.ist.fenixframework.Atomic;
-import pt.ist.fenixframework.dml.runtime.Relation;
-import pt.ist.fenixframework.dml.runtime.RelationListener;
 
 /**
  * 
@@ -142,7 +143,7 @@ public abstract class PartyContact extends PartyContact_Base implements Indexabl
     @Override
     public IndexDocument getDocumentToIndex() {
         IndexDocument document = new IndexDocument(this);
-        document.indexField(this, getValue());
+        document.indexText(this, getValue());
         return document;
     }
 

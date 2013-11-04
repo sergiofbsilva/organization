@@ -24,6 +24,10 @@
  */
 package module.geography.presentationTier.provider;
 
+import pt.ist.bennu.core.domain.MyOrg;
+import pt.ist.bennu.core.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
+import pt.utl.ist.fenix.tools.util.StringNormalizer;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,19 +35,16 @@ import java.util.List;
 import java.util.Map;
 
 import module.geography.domain.Country;
-import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
-import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
 /**
  * 
  * @author Luis Cruz
  * 
  */
-public class CountryAutoCompleteProvider implements AutoCompleteProvider {
+public class CountryAutoCompleteProvider implements AutoCompleteProvider<Country> {
 
     @Override
-    public Collection getSearchResults(Map<String, String> argsMap, String value, int maxCount) {
+    public Collection<Country> getSearchResults(Map<String, String> argsMap, String value, int maxCount) {
         final List<Country> countries = new ArrayList<Country>();
 
         final String trimmedValue = value.trim();

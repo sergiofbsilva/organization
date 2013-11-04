@@ -24,6 +24,11 @@
  */
 package module.contacts.domain;
 
+import pt.ist.bennu.core.domain.User;
+import pt.ist.bennu.search.DomainIndexer;
+import pt.ist.bennu.search.IndexableField;
+import pt.ist.bennu.search.Search;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,9 +36,6 @@ import java.util.List;
 
 import module.contacts.presentationTier.KindOfPartyContact;
 import module.organization.domain.Person;
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.search.DomainIndexer;
-import pt.ist.bennu.search.IndexableField;
 
 /**
  * Class created to assist the {@link ContactsConfigurator} one due to the nasty
@@ -123,7 +125,7 @@ public class ContactsConfiguratorAux {
     static private HashSet<Person> getPersonsToAddBasedOnPartyContactValue(DomainIndexer domainIndexer,
             IndexableField indexableField, String value, User userSearching) {
         HashSet<Person> auxPersonsToAdd = new HashSet<Person>();
-        for (PartyContact partyContact : domainIndexer.search(PartyContact.class, indexableField, value)) {
+        for (PartyContact partyContact : new Search().must(indexableField, value).search(PartyContact.class)) {
             if (partyContact.isVisibleTo(userSearching)) {
                 auxPersonsToAdd.add(partyContact.getOwner());
             }
